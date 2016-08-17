@@ -1,12 +1,11 @@
-puts "Do you want to print something? (y/n)"
 
+
+input = nil
 loop do  
+  puts "Do you want to print something? (y/n)"
   input = gets.chomp.downcase
-  puts "Error! please select either y or n" if input != "y" || input != "n"
   break if input == "y" || input == "n"
+  puts "Invalid input!"
 end
 
-if input == "y"
-  puts "something"
-end
-   
+puts "something" if input == "y"
