@@ -9,7 +9,7 @@ flintstones.push('Dino')
 flintstones.concat(['Dino','Hoppy'])
 flintstones.concat(%w(Dino Hoppy))
 
-flintstones.unique! # To delete extras from using multiple examples
+flintstones.uniq! # To delete extras from using multiple examples
 
 # Question 4
 advice = "Few things in life are as important as house training your pet dinosaur."
