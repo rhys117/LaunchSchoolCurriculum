@@ -1,4 +1,3 @@
-require 'pry'
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -39,7 +38,7 @@ def short_hand(choice)
   return 'scissors' if choice[0, 2] == 'sc'
   return 'lizard' if choice[0] == 'l'
   return 'spock' if choice[0, 2] == 'sp'
-  return 'quit' if choice[0] = 'q'
+  return 'quit' if choice[0] == 'q'
 end
 
 prompt "Welcome to rock, paper, scissors, lizard, spock!"
@@ -71,59 +70,55 @@ loop do # main loop
   computer_choice = VALID_CHOICES.sample
 
   results = [player_choice, computer_choice]
-
   sleep(0.5)
 
-  prompt "You chose: #{player_choice}; Computer chose: #{computer_choice}" # Displays both choices
-
+  prompt "You chose: #{player_choice}; Computer chose: #{computer_choice}"
+  # Displays both choices
   sleep(0.5)
 
   case results.sort # Case to display how the game was won
-  when ['lizard', 'rock']
+  when %w(lizard rock)
     prompt 'rock crushes lizard'
-  when ['lizard', 'paper']
+  when %w(lizard paper)
     prompt 'lizard eats paper'
-  when ['lizard', 'spock']
+  when %w(lizard spock)
     prompt 'lizard poisens spock'
-  when ['lizard', 'scissors']
+  when %w(lizard scissors)
     prompt 'scissors decapitates lizard'
-  when ['paper', 'scissors']
+  when %w(paper scissors)
     prompt 'scissors cuts paper'
-  when ['paper', 'spock']
+  when %w(paper spock)
     prompt 'paper disproves spock'
-  when ['paper', 'rock']
+  when %w(paper rock)
     prompt 'paper covers rock'
-  when ['rock', 'spock']
+  when %w(rock spock)
     prompt 'spock vaporizes rock'
-  when ['rock', 'scissors']
+  when %w(rock scissors)
     prompt 'rock crushes scissors'
-  when ['scissors', 'spock']
+  when %w(scissors spock)
     prompt 'spock smashes scissors'
   else
     prompt 'they cancelled each other out'
   end
-
   sleep(0.5)
 
   display_result(player_choice, computer_choice) # Displays who won
-
   sleep(0.5)
 
   if game_counter.zero?
     prompt "Would you like to play a best of five? y for yes"
     best_of_5 = gets.chomp
+    sleep(0.5)
     break unless best_of_5.downcase.start_with?('y')
   end
 
   if win?(player_choice, computer_choice)
     player_win_count += 1
-    prompt score(player_win_count, computer_win_count)
   elsif win?(computer_choice, player_choice)
     computer_win_count += 1
-    prompt prompt score(player_win_count, computer_win_count)
-  else
-    prompt score(player_win_count, computer_win_count)
   end
+  prompt score(player_win_count, computer_win_count)
+  sleep(0.5)
 
   if player_win_count == 3
     prompt "You won the game!"
