@@ -1,3 +1,5 @@
+require 'pry'
+
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -37,6 +39,7 @@ def short_hand(choice)
   return 'scissors' if choice[0, 2] == 'sc'
   return 'lizard' if choice[0] == 'l'
   return 'spock' if choice[0, 2] == 'sp'
+  return 'quit' if choice[0] = 'q'
 end
 
 prompt "Welcome to rock, paper, scissors, lizard, spock!"
@@ -44,14 +47,17 @@ prompt "Welcome to rock, paper, scissors, lizard, spock!"
 player_win_count = 0
 computer_win_count = 0
 game_counter = 0
+results = []
 
 loop do # main loop
   player_choice = ''
   loop do # player chooses
-    prompt "What do you choose, #{VALID_CHOICES.join(', ')}?"
+    prompt "What do you choose, #{VALID_CHOICES.join(', ')}? (q to quit)"
     player_choice = gets.chomp.downcase
 
     player_choice = short_hand(player_choice)
+
+    break if player_choice == 'quit'
 
     if VALID_CHOICES.include?(player_choice)
       break
@@ -60,11 +66,48 @@ loop do # main loop
     end
   end
 
+  break if player_choice == 'quit'
+
   computer_choice = VALID_CHOICES.sample
 
-  prompt "You chose: #{player_choice}; Computer chose: #{computer_choice}"
+  results = [player_choice, computer_choice]
 
-  display_result(player_choice, computer_choice)
+  sleep(0.5)
+
+  prompt "You chose: #{player_choice}; Computer chose: #{computer_choice}" # Displays both choices
+
+  sleep(0.5)
+
+  case results.sort # Case to display how the game was won
+  when ['lizard', 'rock']
+    prompt 'rock crushes lizard'
+  when ['lizard', 'paper']
+    prompt 'lizard eats paper'
+  when ['lizard', 'spock']
+    prompt 'lizard poisens spock'
+  when ['lizard', 'scissors']
+    prompt 'scissors decapitates lizard'
+  when ['paper', 'scissors']
+    prompt 'scissors cuts paper'
+  when ['paper', 'spock']
+    prompt 'paper disproves spock'
+  when ['paper', 'rock']
+    prompt 'paper covers rock'
+  when ['rock', 'spock']
+    prompt 'spock vaporizes rock'
+  when ['rock', 'scissors']
+    prompt 'rock crushes scissors'
+  when ['scissors', 'spock']
+    prompt 'spock smashes scissors'
+  else
+    prompt 'they cancelled each other out'
+  end
+
+  sleep(0.5)
+
+  display_result(player_choice, computer_choice) # Displays who won
+
+  sleep(0.5)
 
   if game_counter.zero?
     prompt "Would you like to play a best of five? y for yes"
@@ -97,7 +140,8 @@ loop do # main loop
     game_counter = 0
   end
 
+  results = []
   game_counter += 1
 end
 
-prompt "Thanks for playing scissors, paper, rock"
+prompt "Thanks for playing #{VALID_CHOICES.join', '}"
