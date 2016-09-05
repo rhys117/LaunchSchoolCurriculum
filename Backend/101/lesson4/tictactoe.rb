@@ -51,24 +51,60 @@ def square_taken?(board, square)
   board.keys.select { |num| board[num] == INITIAL_MARKER }.include?(square.to_i)
 end
 
-def player_places!(board)
-  square = ''
-  loop do
-    prompt "Choose a square #{empty_squares(board).join(', ')}"
-    square = gets.chomp
-
-    # check user input
-    break if square_taken?(board, square) && valid_number?(square)
-
-    prompt "That's not a valid number."
+def joiner(array, char=', ', word='or')
+  if array.size > 1
+    last_part_string = " #{word} #{array.pop}"
+    first_part_string = array.join(char)
+    joined_string = first_part_string + last_part_string
+  else
+    joined_string = array[0].to_s
   end
-
-  board[square.to_i] = PLAYER_MARKER
+  joined_string
 end
 
-def computer_places!(board)
-  square = empty_squares(board).sample
-  board[square] = COMPUTER_MARKER
+def computer_strat_logic(board, line, marker)
+  if board.values_at(*line).count(marker) == 2 &&
+     board.values_at(*line).count(INITIAL_MARKER) == 1
+    line[board.values_at(*line).index(INITIAL_MARKER)]
+  end
+end
+
+def place_piece!(board, current_player)
+  square = nil
+  
+  if current_player == 'player'
+    loop do
+      prompt "Choose a square #{joiner(empty_squares(board))}"
+      square = gets.chomp
+      # check user input
+      break if square_taken?(board, square) && valid_number?(square)
+      prompt "That's not a valid number."
+    end
+    board[square.to_i] = PLAYER_MARKER
+  end
+
+
+  if current_player == 'computer'
+    WINNING_COMBOS.each do |line|
+      square = computer_strat_logic(board, line, COMPUTER_MARKER)
+      break if square
+    end
+
+    if !square
+      WINNING_COMBOS.each do |line|
+        square = computer_strat_logic(board, line, PLAYER_MARKER)
+        break if square
+      end
+    end
+
+    if !square && board[5] == INITIAL_MARKER
+      square = 5
+    end
+
+    square = empty_squares(board).sample if !square
+    board[square] = COMPUTER_MARKER
+  end
+
 end
 
 def board_full?(board)
@@ -90,32 +126,69 @@ def someone_won?(board)
   !!detect_winner(board)
 end
 
+def alternate_player(current_player)
+  if current_player == 'player'
+    current_player = 'computer'
+  else
+    current_player = 'player'
+  end
+end
+
+
+player_wins = 0
+computer_wins = 0
+game_counter = 0
+current_player = nil
+
 loop do
   board = initialize_board
+  prompt "Would you like to go first? (y for yes!)"
+  go_first_answer = gets.chomp
+
+  if go_first_answer[0].downcase == 'y'
+    current_player = 'player'
+  else
+    current_player = 'computer'
+  end
 
   loop do
     display_board(board)
-    player_places!(board)
 
-    break if someone_won?(board) || board_full?(board)
-
-    computer_places!(board)
-    puts board.inspect
-
+    prompt "Round: #{game_counter + 1}" unless game_counter.zero?
+    prompt "Score. Player: #{player_wins}; Computer: #{computer_wins}" unless game_counter.zero?
+    
+    place_piece!(board, current_player)
+    current_player = alternate_player(current_player)
     break if someone_won?(board) || board_full?(board)
   end
 
   display_board(board)
 
   if someone_won?(board)
-    prompt "#{detect_winner(board)} won!"
+    prompt "#{detect_winner(board)} won that round!"
+    player_wins += 1 if detect_winner(board) == 'Player'
+    computer_wins += 1 if detect_winner(board) == 'Computer'
   else
     prompt "It's a tie!"
   end
 
-  prompt "Would you like to play again? (y or n)"
-  again_input = gets.chomp
-  break unless again_input.downcase.start_with?('y')
+  if game_counter.zero?
+    prompt "Would you like to play first to 5? (y or n)"
+    best_of_5 = gets.chomp
+    break unless best_of_5.downcase.start_with?('y')
+  end
+
+  game_counter += 1
+
+  if computer_wins == 5 || player_wins == 5
+    prompt "#{detect_winner(board)} won the game!"
+    prompt "Would you like to play again? (y or n)"
+    play_again = gets.chomp
+    game_counter = 0
+    computer_wins = 0
+    player_wins = 0
+    break unless play_again.downcase == 'y'
+  end
 end
 
 prompt "Thanks for playing Tic Tac Toe!"
