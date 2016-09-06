@@ -31,44 +31,57 @@ def rand_card!(deck)
   deck.delete_at(rand(deck.length))
 end
 
-def hand_is?(persons_hand, card = 0, num_of_cards = persons_hand.length)
+def face_card?(persons_hand, card)
+  card_number = ''
+  case persons_hand[card][1] 
+  when 2..10
+    card_number << persons_hand[card][1].to_s
+  when 11
+    card_number << 'Jack'
+  when 12
+    card_number << 'Queen'
+  when 13
+    card_number << 'King'
+  else
+    card_number << 'Ace'
+  end
+end
+
+def suit?(persons_hand, card)
+  suit = ''
+  case persons_hand[card][0]
+  when 'h'
+    suit << "hearts"
+  when 'd'
+    suit << "diamonds"
+  when 'c'
+    suit << "clubs"
+  else
+    suit << "spades"
+  end
+end
+
+def hand_is?(persons_hand, card = 0)
   hand = ''
-
   loop do
-    case persons_hand[card][1] 
-    when 2..10
-      hand << persons_hand[card][1].to_s
-    when 11
-      hand << 'jack'
-    when 12
-      hand << 'queen'
-    when 13
-      hand << 'king'
-    else
-      hand << 'ace'
-    end
-
-    case persons_hand[card][0]
-    when 'h'
-      hand << " of hearts; "
-    when 'd'
-      hand << " of diamonds; "
-    when 'c'
-      hand << " of clubs; "
-    else
-      hand << " of spades; "
-    end
-
-    num_of_cards -= 1
+    hand << face_card?(persons_hand, card)
+    hand << " of #{suit?(persons_hand, card)}"
+    hand << "; " unless card == persons_hand.length - 1
+    
     card += 1
-    break if num_of_cards == 0
+    break if card == persons_hand.length
   end
   hand
 end
 
-def hand_score?(persons_hand, card = 0, num_of_cards = persons_hand.length)
-  score = 0
+def show_first_card(persons_hand)
+  hand = ''
+  hand << face_card?(persons_hand, 0)
+  hand << " of #{suit?(persons_hand, 0)}"
+end
 
+def hand_score?(persons_hand, card = 0)
+  score = 0
   loop do
     case persons_hand[card][1]
     when 2..10
@@ -79,22 +92,37 @@ def hand_score?(persons_hand, card = 0, num_of_cards = persons_hand.length)
       score += 1
     end
 
-    num_of_cards -= 1
     card += 1
-    break if num_of_cards == 0
+    break if card == persons_hand.length
   end
   score
+end
+
+def hit!(persons_hand, deck)
+  persons_hand << rand_card!(deck)
 end
 
 deck = initialize_deck
 
 dealer_hand = [rand_card!(deck), rand_card!(deck)]
+player_hand = [rand_card!(deck), rand_card!(deck)]
 
-player_hand = [rand_card!(deck), rand_card!(deck), rand_card!(deck)]
+prompt "Welcome to 21."
+prompt "Dealer hand is #{show_first_card(dealer_hand)} and 'hidden card'"
+puts # line break for readibility
 
-puts player_hand
+loop do
+  prompt "Your hand is: #{hand_is?(player_hand)}"
+  prompt "Your hand is worth: #{hand_score?(player_hand)}"
+  prompt "Would you like to hit or stay?"
+  hit_or_stay = gets.chomp.downcase
 
-prompt "Your hand is: #{hand_is?(player_hand)}"
-prompt "Dealer's hand is #{hand_is?(dealer_hand)}"
+  if hit_or_stay == 'hit'
+    hit!(player_hand, deck)
+  elsif hit_or_stay == 'stay' || bust(player_hand)
+    break
+  else
+    prompt "sorry I didn't understand that"
+  end
+end
 
-prompt "#{hand_score?(player_hand)}"
