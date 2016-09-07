@@ -9,6 +9,15 @@ def prompt(msg)
   puts "=> #{msg}"
 end
 
+def prompt_break(msg)
+  puts "----------------------"
+  puts "=> #{msg}"
+end
+
+def clear_screen
+  system('clear') || system('cls')
+end
+
 def initialize_deck
   new_deck = []
   (1..13).each do |num| # hearts
@@ -106,28 +115,43 @@ def hit!(persons_hand, deck)
 end
 
 def bust?(persons_hand)
-  return false if hand_score(persons_hand) < 22
-  true
+  hand_score(persons_hand) > MAX_NUMBER
 end
 
 def winner?(player, dealer)
   player_hand_score = hand_score(player)
   dealer_hand_score = hand_score(dealer)
-  return 'player' if player_hand_score > dealer_hand_score
-  return 'draw' if player_hand_score == dealer_hand_score
-  'dealer'
+  if player_hand_score > MAX_NUMBER
+    :player_busted
+  elsif dealer_hand_score > MAX_NUMBER
+    :dealer_busted
+  elsif dealer_hand_score < player_hand_score
+    :player
+  elsif dealer_hand_score > player_hand_score
+    :dealer
+  else
+    :tie
+  end
 end
 
-def print_result(player_hand, dealer_hand)
-  puts "Your score: #{hand_score(player_hand)}; Dealer score:\
-   #{hand_score(dealer_hand)}"
-  case winner?(player_hand, dealer_hand)
-  when 'player'
-    prompt "You won!"
-  when 'dealer'
-    prompt "The dealer won!"
-  else
-    prompt "It's a draw"
+def print_result(player_hand, dealer_hand, score)
+  who_won = winner?(player_hand, dealer_hand)
+
+  case who_won
+  when :player_busted
+    score['dealer'] += 1
+    prompt_break "You busted! Dealer wins!"
+  when :dealer_busted
+    score['player'] += 1
+    prompt_break "Dealer busted! You win!"
+  when :player
+    score['player'] += 1
+    prompt_break "You win!"
+  when :dealer
+    score['dealer'] += 1
+    prompt_break "Dealer wins!"
+  when :tie
+    prompt_break "It's a tie!"
   end
 end
 
@@ -144,7 +168,7 @@ def player_turn!(player_hand, deck)
   loop do
     hit_or_stay = ''
     show_hand_and_score(player_hand, 'player')
-    prompt "Would you like to hit or stay?"
+    prompt_break "Would you like to hit or stay?"
     loop do # user input checking
       hit_or_stay = gets.chomp.downcase
       break if %w(stay hit).include?(hit_or_stay)
@@ -158,35 +182,51 @@ end
 
 def dealer_turn!(dealer_hand, deck)
   show_hand_and_score(dealer_hand, 'dealer')
+  sleep(1)
 
   loop do
     dealer_hand_score = hand_score(dealer_hand)
     if dealer_hand_score < DEALER_STOP_NUM
       hit!(dealer_hand, deck)
-      prompt "Dealer Hits!"
+      prompt_break "Dealer Hits!"
+      sleep(1)
       show_hand_and_score(dealer_hand, 'dealer')
+      sleep(1)
     elsif dealer_hand_score <= MAX_NUMBER
-      prompt "Dealer Stays!"
+      prompt_break "Dealer Stays!"
       break
     else
-      prompt "Dealer busts! You won!"
       break
     end
   end
 end
 
 def play_again?
-  prompt "would you like to play again? (y for yes)"
+  prompt_break "would you like to play again? (y for yes)"
   play_again = gets.chomp
   play_again.downcase.start_with?('y')
 end
 
-prompt "Welcome to 21."
+def continue?(first_game)
+  if first_game
+    $first_game = false
+    prompt_break "Would you like to play first to 5? (y or n)"
+    best_of_5 = gets.chomp
+    return true if best_of_5.downcase.start_with?('y')
+  elsif first_game == false
+    return true
+  else
+    return false
+  end
+end
 
-player_wins = 0
-dealer_wins = 0
-game_counter = 0
+score = { 'player' => 0, 'dealer' => 0 }
+$first_game = true
+$game_counter = 0
+
 loop do
+  # clear_screen
+  clear_screen
   # initialize deck and player hands
   deck = initialize_deck
   dealer_hand = []
@@ -198,51 +238,42 @@ loop do
     player_hand << rand_card!(deck)
   end
 
+  prompt "Welcome to 21." if $first_game
+  prompt "Score: Player #{score['player']}; Dealer #{score['dealer']}" unless $first_game
+  prompt "First to 5 wins" unless $first_game
+
   puts '----------------------'
 
-  prompt "Score: Player #{player_wins}; Dealer #{dealer_wins}" unless game_counter.zero?
+  
+  prompt "Dealer hand is #{show_first_card(dealer_hand)} and 'hidden card'"
+  puts # line break for readibility
 
-  loop do
-    prompt "Dealer hand is #{show_first_card(dealer_hand)} and 'hidden card'"
-    puts # line break for readibility
-
-    player_turn!(player_hand, deck)
-    if bust?(player_hand) # player busts
-      show_hand_and_score(player_hand, 'player')
-      prompt "You busted! The dealer won"
-      break
-    end
-
-    dealer_turn!(dealer_hand, deck)
-    break if bust?(dealer_hand)
-
-    print_result(player_hand, dealer_hand)
-    break
+  player_turn!(player_hand, deck)
+  if bust?(player_hand) # player busts
+    show_hand_and_score(player_hand, 'player')
+    print_result(player_hand, dealer_hand, score)
+    sleep(2.5)
+    continue?($first_game)? next : break
   end
 
-  if game_counter.zero?
-    prompt "Would you like to play first to 5? (y or n)"
-    best_of_5 = gets.chomp
-    break unless best_of_5.downcase.start_with?('y')
-  end
+  dealer_turn!(dealer_hand, deck)
+  puts "Your score: #{hand_score(player_hand)}; Dealer score:\
+  #{hand_score(dealer_hand)}"
+  print_result(player_hand, dealer_hand, score)
+  sleep(2.5)
+  bust?(dealer_hand)
 
-  case winner?(player_hand, dealer_hand)
-  when 'player'
-    player_wins += 1
-  when 'dealer'
-    dealer_wins += 1
-  end
-  game_counter += 1
 
-  if dealer_wins == 5 || player_wins == 5
-    prompt "#{winner?(player_hand, dealer_hand)} won the game!"
+  continue?($first_game)
+
+  if score.values.include?(5)
+    prompt_break "#{winner?(player_hand, dealer_hand)} won the game!"
     prompt "Would you like to play again? (y or n)"
     play_again = gets.chomp
-    game_counter = 0
-    computer_wins = 0
-    player_wins = 0
+    $first_game = true
+    score = { 'player' => 0, 'dealer' => 0 }
     break unless play_again.downcase == 'y'
   end
 end
 
-prompt "Thanks for playing 21!"
+prompt_break "Thanks for playing 21!"
