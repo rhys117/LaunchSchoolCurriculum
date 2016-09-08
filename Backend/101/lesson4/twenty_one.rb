@@ -168,13 +168,13 @@ def player_turn!(player_hand, deck)
   loop do
     hit_or_stay = ''
     show_hand_and_score(player_hand, 'player')
-    prompt_break "Would you like to hit or stay?"
     loop do # user input checking
+      prompt_break "Would you like to HIT or STAY? q to quit"
       hit_or_stay = gets.chomp.downcase
-      break if %w(stay hit).include?(hit_or_stay)
-      prompt "I didn't understand that... would you like to STAY or HIT?"
+      break if %w(stay hit q).include?(hit_or_stay)
     end
 
+    return 'quit' if hit_or_stay == 'q'
     hit!(player_hand, deck) if hit_or_stay == 'hit'
     break if bust?(player_hand) || hit_or_stay == 'stay'
   end
@@ -195,36 +195,43 @@ def dealer_turn!(dealer_hand, deck)
     elsif dealer_hand_score <= MAX_NUMBER
       prompt_break "Dealer Stays!"
       break
-    else
-      break
     end
+    break
   end
+end
+
+def play_again(score)
+  clear_screen
+  prompt_break "#{score.key(5).capitalize} won the game!"
+  prompt "Would you like to play again? (y or n)"
+  play_again = gets.chomp
+  first_game_change(first_game)
+  score['player'] = 0
+  score['dealer'] = 0
+  return true if play_again == 'y'
+end
+
+def first_game_change(first_game)
+  first_game[0] = !first_game[0]
 end
 
 def continue?(first_game, score)
   if score.values.include?(5)
+    return true if play_again(score)
+  elsif first_game[0]
+    first_game_change(first_game)
     clear_screen
-    prompt_break "#{score.key(5).capitalize} won the game!"
-    prompt "Would you like to play again? (y or n)"
-    play_again = gets.chomp
-    $first_game = true
-    score['player'] = 0
-    score['dealer'] = 0
-    return true if play_again == 'y'
-  elsif first_game
-    $first_game = false
     prompt_break "Would you like to play first to 5? (y or n)"
     best_of_5 = gets.chomp
     return true if best_of_5.downcase.start_with?('y')
-  elsif first_game == false
+  elsif first_game[0] == false
     return true
-  else
-    return false
   end
+  false
 end
 
 score = { 'player' => 0, 'dealer' => 0 }
-$first_game = true
+first_game = [true]
 
 loop do
   # clear_screen
@@ -240,32 +247,33 @@ loop do
     player_hand << rand_card!(deck)
   end
 
-  prompt "Welcome to 21." if $first_game
+  prompt "Welcome to 21." if first_game[0]
   prompt "Score: Player #{score['player']}; Dealer #{score['dealer']}" unless
-    $first_game
-  prompt "First to 5 wins" unless $first_game
+    first_game[0]
+  prompt "First to 5 wins" unless first_game[0]
 
   puts '----------------------'
 
   prompt "Dealer hand is #{show_first_card(dealer_hand)} and 'hidden card'"
   puts '' # line break for readibility
 
-  player_turn!(player_hand, deck)
+  break if player_turn!(player_hand, deck) == 'quit'
   if bust?(player_hand) # player busts
     show_hand_and_score(player_hand, 'player')
     print_result(player_hand, dealer_hand, score)
     sleep(2.5)
-    continue?($first_game, score) ? next : break
+    continue?(first_game, score) ? next : break
   end
 
   dealer_turn!(dealer_hand, deck)
+
   puts "Your score: #{hand_score(player_hand)}; Dealer score:\
   #{hand_score(dealer_hand)}"
   print_result(player_hand, dealer_hand, score)
   sleep(2.5)
   bust?(dealer_hand)
 
-  continue?($first_game, score)
+  continue?(first_game, score)
 end
 
 prompt_break "Thanks for playing 21!"
