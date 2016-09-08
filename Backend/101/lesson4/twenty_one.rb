@@ -201,14 +201,17 @@ def dealer_turn!(dealer_hand, deck)
   end
 end
 
-def play_again?
-  prompt_break "would you like to play again? (y for yes)"
-  play_again = gets.chomp
-  play_again.downcase.start_with?('y')
-end
-
-def continue?(first_game)
-  if first_game
+def continue?(first_game, score)
+  if score.values.include?(5)
+    clear_screen
+    prompt_break "#{score.key(5).capitalize} won the game!"
+    prompt "Would you like to play again? (y or n)"
+    play_again = gets.chomp
+    $first_game = true
+    score['player'] = 0
+    score['dealer'] = 0
+    return true if play_again == 'y'
+  elsif first_game
     $first_game = false
     prompt_break "Would you like to play first to 5? (y or n)"
     best_of_5 = gets.chomp
@@ -222,7 +225,6 @@ end
 
 score = { 'player' => 0, 'dealer' => 0 }
 $first_game = true
-$game_counter = 0
 
 loop do
   # clear_screen
@@ -239,21 +241,21 @@ loop do
   end
 
   prompt "Welcome to 21." if $first_game
-  prompt "Score: Player #{score['player']}; Dealer #{score['dealer']}" unless $first_game
+  prompt "Score: Player #{score['player']}; Dealer #{score['dealer']}" unless
+    $first_game
   prompt "First to 5 wins" unless $first_game
 
   puts '----------------------'
 
-  
   prompt "Dealer hand is #{show_first_card(dealer_hand)} and 'hidden card'"
-  puts # line break for readibility
+  puts '' # line break for readibility
 
   player_turn!(player_hand, deck)
   if bust?(player_hand) # player busts
     show_hand_and_score(player_hand, 'player')
     print_result(player_hand, dealer_hand, score)
     sleep(2.5)
-    continue?($first_game)? next : break
+    continue?($first_game, score) ? next : break
   end
 
   dealer_turn!(dealer_hand, deck)
@@ -263,17 +265,7 @@ loop do
   sleep(2.5)
   bust?(dealer_hand)
 
-
-  continue?($first_game)
-
-  if score.values.include?(5)
-    prompt_break "#{winner?(player_hand, dealer_hand)} won the game!"
-    prompt "Would you like to play again? (y or n)"
-    play_again = gets.chomp
-    $first_game = true
-    score = { 'player' => 0, 'dealer' => 0 }
-    break unless play_again.downcase == 'y'
-  end
+  continue?($first_game, score)
 end
 
 prompt_break "Thanks for playing 21!"
