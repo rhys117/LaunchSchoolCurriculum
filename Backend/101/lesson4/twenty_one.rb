@@ -20,22 +20,11 @@ end
 
 def initialize_deck
   new_deck = []
-  (1..13).each do |num| # hearts
-    new_deck << [SUITES[0], num]
+  SUITES.each do |suit|
+    (1..13).each do |num|
+      new_deck << [suit, num]
+    end
   end
-
-  (1..13).each do |num| # diamonds
-    new_deck << [SUITES[1], num]
-  end
-
-  (1..13).each do |num| # clubs
-    new_deck << [SUITES[2], num]
-  end
-
-  (1..13).each do |num| # spades
-    new_deck << [SUITES[3], num]
-  end
-
   new_deck
 end
 
