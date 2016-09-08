@@ -200,7 +200,7 @@ def dealer_turn!(dealer_hand, deck)
   end
 end
 
-def play_again(score)
+def play_again(score, first_game)
   clear_screen
   prompt_break "#{score.key(5).capitalize} won the game!"
   prompt "Would you like to play again? (y or n)"
@@ -217,7 +217,7 @@ end
 
 def continue?(first_game, score)
   if score.values.include?(5)
-    return true if play_again(score)
+    return true if play_again(score, first_game)
   elsif first_game[0]
     first_game_change(first_game)
     clear_screen
@@ -230,7 +230,7 @@ def continue?(first_game, score)
   false
 end
 
-score = { 'player' => 0, 'dealer' => 0 }
+score = { 'player' => 0, 'dealer' => 4 }
 first_game = [true]
 
 loop do
