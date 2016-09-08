@@ -219,7 +219,7 @@ def continue?(first_game, score)
   false
 end
 
-score = { 'player' => 0, 'dealer' => 4 }
+score = { 'player' => 0, 'dealer' => 0 }
 first_game = [true]
 
 loop do
