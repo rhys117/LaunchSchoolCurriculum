@@ -224,14 +224,12 @@ score = { 'player' => 0, 'dealer' => 0 }
 first_game = [true]
 
 loop do
-  # clear_screen
   clear_screen
-  # initialize deck and player hands
+
   deck = initialize_deck
   dealer_hand = []
   player_hand = []
 
-  # deal two cards to each player
   2.times do
     dealer_hand << rand_card!(deck)
     player_hand << rand_card!(deck)
