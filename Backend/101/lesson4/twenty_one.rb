@@ -32,41 +32,39 @@ def rand_card!(deck)
   deck.delete_at(rand(deck.length))
 end
 
-def face_card?(persons_hand, card)
-  card_number = ''
-  card_number <<  case persons_hand[card][1]
-                  when 2..10
-                    persons_hand[card][1].to_s
-                  when 11
-                    'Jack'
-                  when 12
-                    'Queen'
-                  when 13
-                    'King'
-                  else
-                    'Ace'
-                  end
+def face_card_text(persons_hand, card)
+  case persons_hand[card][1]
+  when 2..10
+    persons_hand[card][1].to_s
+  when 11
+    'Jack'
+  when 12
+    'Queen'
+  when 13
+    'King'
+  else
+    'Ace'
+  end
 end
 
-def suit?(persons_hand, card)
-  suit = ''
-  suit << case persons_hand[card][0]
-          when 'h'
-            "hearts"
-          when 'd'
-            "diamonds"
-          when 'c'
-            "clubs"
-          else
-            "spades"
-          end
+def suit_text(persons_hand, card)
+  case persons_hand[card][0]
+  when 'h'
+    "hearts"
+  when 'd'
+    "diamonds"
+  when 'c'
+    "clubs"
+  else
+    "spades"
+  end
 end
 
-def hand_is?(persons_hand, card = 0)
+def hand_is_string(persons_hand, card = 0)
   hand = ''
   loop do
-    hand << face_card?(persons_hand, card)
-    hand << " of #{suit?(persons_hand, card)}"
+    hand << face_card_text(persons_hand, card)
+    hand << " of #{suit_text(persons_hand, card)}"
     hand << "; " unless card == persons_hand.length - 1
 
     card += 1
@@ -76,7 +74,13 @@ def hand_is?(persons_hand, card = 0)
 end
 
 def show_first_card(persons_hand)
-  face_card?(persons_hand, 0) + " of #{suit?(persons_hand, 0)}"
+  face_card_text(persons_hand, 0) + " of #{suit_text(persons_hand, 0)}"
+end
+
+def modify_for_aces(card_values, score)
+  card_values.select { |card| card == 1 }.count.times do
+    score -= 10 if score > MAX_NUMBER
+  end
 end
 
 def hand_score(persons_hand)
@@ -92,15 +96,13 @@ def hand_score(persons_hand)
                 value
               end
   end
-  # modify for aces
-  card_values.select { |card| card == 1 }.count.times do
-    score -= 10 if score > MAX_NUMBER
-  end
+  modify_for_aces(card_values, score)
   score
 end
 
-def hit!(persons_hand, deck)
+def hit!(persons_hand, deck, player)
   persons_hand << rand_card!(deck)
+  prompt_break "#{player.capitalize} Hits!"
 end
 
 def bust?(persons_hand)
@@ -149,7 +151,7 @@ def show_hand_and_score(persons_hand, person)
   intro_string = 'Your' if person == 'player'
   intro_string = 'Dealers' if person == 'dealer'
 
-  prompt "#{intro_string} hand is: #{hand_is?(persons_hand)}"
+  prompt "#{intro_string} hand is: #{hand_is_string(persons_hand)}"
   prompt "#{intro_string} score is: #{hand_score(persons_hand)}"
 end
 
@@ -164,7 +166,7 @@ def player_turn!(player_hand, deck)
     end
 
     return 'quit' if hit_or_stay == 'q'
-    hit!(player_hand, deck) if hit_or_stay == 'hit'
+    hit!(player_hand, deck, 'player') if hit_or_stay == 'hit'
     break if bust?(player_hand) || hit_or_stay == 'stay'
   end
 end
@@ -176,16 +178,15 @@ def dealer_turn!(dealer_hand, deck)
   loop do
     dealer_hand_score = hand_score(dealer_hand)
     if dealer_hand_score < DEALER_STOP_NUM
-      hit!(dealer_hand, deck)
-      prompt_break "Dealer Hits!"
-      sleep(1)
+      hit!(dealer_hand, deck, 'dealer')
       show_hand_and_score(dealer_hand, 'dealer')
-      sleep(1)
+      sleep(1.5)
     elsif dealer_hand_score <= MAX_NUMBER
       prompt_break "Dealer Stays!"
       break
+    else
+      break
     end
-    break
   end
 end
 
@@ -197,7 +198,7 @@ def play_again(score, first_game)
   first_game_change(first_game)
   score['player'] = 0
   score['dealer'] = 0
-  return true if play_again == 'y'
+  play_again == 'y'
 end
 
 def first_game_change(first_game)
@@ -262,7 +263,7 @@ loop do
   sleep(2.5)
   bust?(dealer_hand)
 
-  continue?(first_game, score)
+  break unless continue?(first_game, score)
 end
 
 prompt_break "Thanks for playing 21!"
