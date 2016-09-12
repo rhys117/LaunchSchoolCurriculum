@@ -4,7 +4,7 @@ numbers = {
   low:    10
 }
 
-low_numbers = numbers.select do |key, value|
+low_numbers = numbers.select! do |key, value|
                  value < 25
                end
 
