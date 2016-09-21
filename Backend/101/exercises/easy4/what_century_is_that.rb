@@ -1,11 +1,20 @@
 def century(year)
-  case year
-  when > 2000
-    '21st'
-  when > 1900
-    '19th'
-    
+  century = year / 100 + 1
+  century -= 1 if year % 100 == 0
+
+  suffix = 'th' if [11, 12, 13].include?(century % 100)
+  
+  if suffix != 'th' 
+    suffix = case century.to_s.chars.last
+             when '1' then 'st'
+             when '2' then 'nd'
+             when '3' then 'rd'
+             else 'th'
+             end
   end
+
+  century.to_s + suffix
+end
 
 puts century(2000) == '20th'
 puts century(2001) == '21st'
