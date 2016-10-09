@@ -1,13 +1,13 @@
-def featured(num)
-  
-  next_num = num + 0
+def featured(num) 
+  num += 1 until num.odd? && num & 7 == 0
+
   loop do
-    next_num += 1
-    no_recurring_digits = next_num.to_s.split('').uniq.length == next_num.to_s.split('').length
-    return "not" if next_num.to_s.length > 10
-    break if next_num.odd? && next_num % 7 == 0 && no_recurring_digits
+    
+    return num if num.chars.to_s.split('').uniq == num.to_s.split('')
+    num += 14
+    break if num >= 987543210
   end
-  p next_num
+  'There is no number that fulfills the requirements.'
 end
 
 # must be odd. multiple of 7. no recurring digits.

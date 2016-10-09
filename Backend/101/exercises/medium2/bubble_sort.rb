@@ -1,14 +1,12 @@
 def bubble_sort!(array)
-  num = 0
-
-  loop do 
-   if array[num].to_s > array[num + 1].to_s
-      temp = array[num]
-      array[num] = array[num + 1]
-      array[num + 1] = temp
+  loop do
+    complete = false
+    1.upto(array.length - 1) do |index|
+      next if array[index - 1] <= array[index]
+      array[index - 1], array[index] = array[index], array[index - 1]
+      complete = true
     end
-    num += 1
-    break if num == 10
+    break unless complete
   end
   p array
 end
