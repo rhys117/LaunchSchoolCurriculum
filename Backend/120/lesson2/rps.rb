@@ -1,5 +1,5 @@
 class Move
-  VALUES = ['rock', 'paper', 'scissors']
+  VALUES = ['rock', 'paper', 'scissors'].freeze
 
   def initialize(value)
     @value = value
@@ -18,29 +18,15 @@ class Move
   end
 
   def >(other_move)
-    if rock?
-      return true if other_move.scissors?
-      return false
-    elsif paper?
-      return true if other_move.rock?
-      return false
-    elsif scissors?
-      return true if other_move.paper?
-      return false
-    end
+    (rock? && other_move.scissors?) ||
+      (paper? && other_move.rock?) ||
+      (scissors? && other_move.paper?)
   end
 
   def <(other_move)
-    if rock?
-      return true if other_move.paper?
-      return false
-    elsif paper?
-      return true if other_move.scissors?
-      return false
-    elsif scissors?
-      return true if other_move.rock?
-      return false
-    end
+    (rock? && other_move.paper?) ||
+      (paper? && other_move.scissors?) ||
+      (scissors? && other_move.rock?)
   end
 
   def to_s
@@ -59,23 +45,23 @@ end
 class Human < Player
   def set_name
     n = ''
-      loop do 
-        puts "What's your name?"
-        n = gets.chomp
-        break unless n.empty?
-        puts "Sorry, you must enter a value."
-      end
+    loop do
+      puts "What's your name?"
+      n = gets.chomp
+      break unless n.empty?
+      puts "Sorry, you must enter a value."
+    end
     self.name = n
   end
 
   def choose
     choice = nil
-      loop do
-        puts "Please choose rock, paper, or scissors:"
-        choice = gets.chomp.downcase
-        break if Move::VALUES.include? choice
-        puts "Thats's not a valid choice!"
-      end
+    loop do
+      puts "Please choose rock, paper, or scissors:"
+      choice = gets.chomp.downcase
+      break if Move::VALUES.include? choice
+      puts "Thats's not a valid choice!"
+    end
     self.move = Move.new(choice)
   end
 end
@@ -102,10 +88,12 @@ class RPSGame
     puts "Welcome to Rock, Paper, Scissors!"
   end
 
-  def display_winner
+  def display_moves
     puts "#{human.name} chose #{human.move}."
     puts "#{computer.name} chose #{computer.move}."
+  end
 
+  def display_winner
     if human.move > computer.move
       puts "#{human.name} Won!"
     elsif human.move < computer.move
@@ -129,7 +117,7 @@ class RPSGame
     end
 
     return true if answer == 'y'
-    return false
+    return false if answer == 'n'
   end
 
   def play
@@ -138,6 +126,7 @@ class RPSGame
     loop do
       human.choose
       computer.choose
+      display_moves
       display_winner
       break unless play_again?
     end
