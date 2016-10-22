@@ -1,3 +1,19 @@
+module Formatting
+  def clear_screen
+    system('clear') || system('cls')
+  end
+
+  def line
+    puts "-----------------------------"
+  end
+
+  def line_break
+    puts ''
+  end
+end
+
+# ------------- #
+
 class Move
   VALUES = ['rock', 'paper', 'scissors'].freeze
 
@@ -34,13 +50,36 @@ class Move
   end
 end
 
+# ------------- #
+
 class Player
-  attr_accessor :move, :name
+  attr_accessor :move, :name, :score
 
   def initialize
     set_name
+    @score = 0
   end
 end
+
+# ------------- #
+
+# class Score
+#   attr_accessor :value
+
+#   def initialize
+#     @value = 0
+#   end
+
+#   def add
+#     @value += 1
+#   end
+
+#   def to_s
+#     @value
+#   end
+# end
+
+# ------------- #
 
 class Human < Player
   def set_name
@@ -66,6 +105,8 @@ class Human < Player
   end
 end
 
+# ------------- #
+
 class Computer < Player
   def set_name
     self.name = ['Hal', 'R2D2', 'Skynet', 'Cyborg'].sample
@@ -75,6 +116,8 @@ class Computer < Player
     self.move = Move.new(Move::VALUES.sample)
   end
 end
+
+# ------------- #
 
 class RPSGame
   attr_accessor :human, :computer
@@ -93,14 +136,26 @@ class RPSGame
     puts "#{computer.name} chose #{computer.move}."
   end
 
+  def display_scores
+    puts "#{human.name} score: #{human.score.value}"
+    puts "#{computer.name} score: #{computer.score.value}"
+  end
+
   def display_winner
     if human.move > computer.move
       puts "#{human.name} Won!"
+      return :human
     elsif human.move < computer.move
       puts "#{computer.name} Won!"
+      return :computer
     else
       puts "It's a tie!"
+      return nil
     end
+  end
+
+  def increase_score(winner)
+
   end
 
   def display_goodbye_message
@@ -120,14 +175,30 @@ class RPSGame
     return false if answer == 'n'
   end
 
+  def score_adjustment(winner)
+    human.score += 1 if :human
+    computer.score += 1 if :computer
+  end
+
+  def display_scores
+
+  end
+
+  def play_round
+    display_moves
+    winner = display_winner
+    score_adjustment(winner) if winner
+    display_scores
+    # win_history(winner)
+  end
+
   def play
     display_welcome_message
 
     loop do
       human.choose
       computer.choose
-      display_moves
-      display_winner
+      play_round
       break unless play_again?
     end
     display_goodbye_message
