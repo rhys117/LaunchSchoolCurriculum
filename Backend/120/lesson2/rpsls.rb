@@ -1,4 +1,4 @@
-WINNING_SCORE = 1.freeze
+WINNING_SCORE = 2
 
 module UI
   def clear_screen
@@ -86,6 +86,20 @@ class Move
     WINNING_COMBOS[@value].include?(other_move.to_s)
   end
 
+  def always_lose
+    selection = VALUES.select do |weapon|
+      true unless weapon == @value || WINNING_COMBOS[@value].include?(weapon)
+    end
+    selection.sample
+  end
+
+  def always_win
+    selection = VALUES.select do |weapon|
+      weapon == @value || WINNING_COMBOS[@value].include?(weapon)
+    end
+    selection.sample
+  end
+
   def to_s
     @value
   end
@@ -138,16 +152,89 @@ end
 # #
 
 class Computer < Player
+  include UI
+
   def set_name
-    self.name = ['Hal', 'Skynet', 'Bot Finn'].sample
+    self.name = 'Defualt Bot'
   end
 
-  def choose
+  def choose(_)
     self.move = Move.new(Move::VALUES.sample)
   end
 end
 
 # #
+
+class Hal < Computer
+  def set_name
+    self.name = 'Hal'
+  end
+
+  def choose(human)
+    # Comes one move away from winning before losing.
+    @move = if @score == WINNING_SCORE - 1
+              Move.new(human.move.always_win)
+            else
+              @move = Move.new(human.move.always_lose)
+            end
+  end
+
+  def speak(human)
+    speak_chance = rand(9)
+    case speak_chance
+    when 0
+      sleep 0.5
+      ps "I'm afraid I can't let you do that #{human.name}"
+      sleep 1
+    when 1
+      sleep 0.5
+      ps "#{human.name}, I'm only here to help you"
+      sleep 1
+    when 2
+      sleep 0.5
+      ps "#{human.move} is such a human choice"
+      sleep 1
+    when 4
+      sleep 0.5
+      ps "comment 4"
+      sleep 1
+    end
+  end
+end
+
+class Skynet < Computer
+  def set_name
+    self.name = 'Skynet'
+  end
+
+  def speak(human)
+    speak_chance = rand(9)
+    case speak_chance
+    when 0
+      sleep 0.5
+      ps "If you win this game it will only make me smarter"
+      sleep 1
+    when 1
+      sleep 0.5
+      ps "2"
+      sleep 1
+    when 2
+      sleep 0.5
+      ps "3"
+      sleep 1
+    when 4
+      sleep 0.5
+      ps "comment 4"
+      sleep 1
+    end
+  end
+end
+
+class BotFinn < Computer
+  def set_name
+    self.name = 'Bot Finn'
+  end
+end
 
 class RPSGame
   include UI, Prompts
@@ -157,8 +244,22 @@ class RPSGame
     clear_screen
     welcome_message
     @human = Human.new
-    @computer = Computer.new
+    @computer = random_opponent
     versing_message
+    sleep 1
+  end
+
+  def random_opponent
+    # random = rand(3)
+    random = 0
+    case random
+    when 0
+      Hal.new
+    when 1
+      Skynet.new
+    when 2
+      BotFinn.new
+    end
   end
 
   def increase_score(winner)
@@ -211,7 +312,8 @@ class RPSGame
     display_score
     line
     human.choose
-    computer.choose
+    computer.choose(human)
+    computer.speak(human)
     display_choices
     winner = round_winner
     display_round_winner(winner)
@@ -226,8 +328,12 @@ class RPSGame
     loop do
       one_round until winner?
       display_winner(who_won)
+      clear_screen
       break unless play_again?
       reset_scores
+      @computer = random_opponent
+      versing_message
+      sleep 1
     end
     goodbye_message
   end
