@@ -1,3 +1,5 @@
+WINNING_SCORE = 1.freeze
+
 module UI
   def clear_screen
     system('clear') || system('cls')
@@ -21,23 +23,45 @@ module Prompts
     ps "Welcome to rock, paper, scissors, lizard, spock!"
   end
 
+  def goodbye_message
+    ps "Thanks for playing!"
+  end
+
   def versing_message
     ps "#{human.name} you will be facing #{computer.name}:"
   end
 
   def display_choices
-    ps "#{human.name} chose: #{human.move}."
-    ps "#{computer.name} chose: #{computer.move}."
+    ps "#{human.name} chose: #{human.move}"
+    ps "#{computer.name} chose: #{computer.move}"
   end
 
-  def display_winner
-    if human.move::value > computer.move::value
-      ps "#{human.name} Won!"
-    elsif human.move::value == computer.move::value
-      ps "It's a tie"
-    else
-      ps "#{computer.name} Won!"
+  def display_round_winner(winner)
+    case winner
+    when :human
+      ps "#{human.name} won this round!"
+    when :computer
+      ps "#{computer.name} won this round!"
+    when :tie
+      ps "It's a tie this round!"
     end
+  end
+
+  def display_winner(winner)
+    case winner
+    when :human
+      ps "#{human.name} Won!"
+    when :computer
+      ps "#{computer.name} Won!"
+    when :tie
+      ps "It's a tie!"
+    end
+  end
+
+  def display_score
+    msg = "Score: #{human.name} - #{human.score}/#{WINNING_SCORE} "\
+          "|| #{computer.name} - #{computer.score}/#{WINNING_SCORE}"
+    ps msg
   end
 end
 
@@ -59,11 +83,15 @@ class Move
   end
 
   def >(other_move)
-    WINNING_COMBOS[@value].include?(other_move.value)
+    WINNING_COMBOS[@value].include?(other_move.to_s)
   end
 
   def to_s
     @value
+  end
+
+  def to_sym
+    @value.to_sym
   end
 end
 
@@ -133,14 +161,76 @@ class RPSGame
     versing_message
   end
 
+  def increase_score(winner)
+    human.score += 1 if winner == :human
+    computer.score += 1 if winner == :computer
+  end
+
+  def round_winner
+    if human.move > computer.move
+      :human
+    elsif human.move == computer.move
+      :tie
+    else
+      :computer
+    end
+  end
+
+  def update_history
+    human.history[human.move.to_sym] += 1
+    computer.history[computer.move.to_sym] += 1
+  end
+
+  def winner?
+    computer.score == WINNING_SCORE || human.score == WINNING_SCORE
+  end
+
+  def who_won
+    return :computer if computer.score == WINNING_SCORE
+    return :human if human.score == WINNING_SCORE
+  end
+
+  def play_again?
+    choice = ''
+    loop do
+      ps "Would you like to play again? (y)es or (n)o"
+      choice = gets.chomp.downcase
+      break if ['y', 'yes', 'no', 'n'].include?(choice)
+    end
+    return true if choice == 'y' || choice == 'yes'
+    return false if choice == 'n' || choice == 'no'
+  end
+
+  def reset_scores
+    computer.score = 0
+    human.score = 0
+  end
+
   def one_round
     clear_screen
+    display_score
     line
     human.choose
     computer.choose
     display_choices
-    display_winner
+    winner = round_winner
+    display_round_winner(winner)
+    increase_score(winner)
+    update_history
+    line
+    display_score
+    sleep 2
+  end
+
+  def play
+    loop do
+      one_round until winner?
+      display_winner(who_won)
+      break unless play_again?
+      reset_scores
+    end
+    goodbye_message
   end
 end
 
-RPSGame.new.one_round
+RPSGame.new.play
