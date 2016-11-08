@@ -1,4 +1,4 @@
-WINNING_SCORE = 2
+WINNING_SCORE = 10
 
 module UI
   def clear_screen
@@ -15,6 +15,14 @@ module UI
 
   def line
     puts "----------------------------------"
+  end
+
+  def sleep_message(msg)
+    if msg.length > 0
+      sleep 0.5
+      ps msg
+      sleep 1.5
+    end
   end
 end
 
@@ -86,6 +94,10 @@ class Move
     WINNING_COMBOS[@value].include?(other_move.to_s)
   end
 
+  def ==(other_move)
+    @value == other_move.to_s
+  end
+
   def always_lose
     selection = VALUES.select do |weapon|
       true unless weapon == @value || WINNING_COMBOS[@value].include?(weapon)
@@ -95,7 +107,7 @@ class Move
 
   def always_win
     selection = VALUES.select do |weapon|
-      weapon == @value || WINNING_COMBOS[@value].include?(weapon)
+      WINNING_COMBOS[@value].include?(weapon)
     end
     selection.sample
   end
@@ -117,8 +129,7 @@ class Player
   def initialize
     set_name
     @score = 0
-    @history = { rock: 0, paper: 0, scissors: 0,
-                 lizard: 0, spock: 0 }
+    @history = []
   end
 end
 
@@ -130,7 +141,7 @@ class Human < Player
     n = ''
     loop do
       ps "Please enter a display name:"
-      n = gets.chomp
+      n = gets.chomp.strip
       break unless n.empty?
       ps "Sorry you must enter a name!"
     end
@@ -155,11 +166,37 @@ class Computer < Player
   include UI
 
   def set_name
-    self.name = 'Defualt Bot'
+    self.name = 'Default Bot'
   end
 
   def choose(_)
     self.move = Move.new(Move::VALUES.sample)
+  end
+
+  def move_percentages(human)
+    move_count = []
+    Move::VALUES.each do |weapon|
+      count = human.history.count(weapon)
+      if count > 0
+        move_count << count.to_f / human.history.length
+      else
+        move_count << 0
+      end
+    end
+
+    move_count
+  end
+
+  def win_percentage(human)
+    self.history.each_with_index do |weapon, index|
+      weapon_wins = 0
+      temp_move = Move.new(weapon)
+      times_weapon_used = self.history.count(weapon)
+      weapon_wins += 1 if temp_move > human.history[index]
+
+      win_perc = weapon_wins.to_f / times_weapon_used
+      p win_perc
+    end
   end
 end
 
@@ -170,63 +207,111 @@ class Hal < Computer
     self.name = 'Hal'
   end
 
+  STOP_WINNING_AT = WINNING_SCORE - 1
+
   def choose(human)
     # Comes one move away from winning before losing.
-    @move = if @score == WINNING_SCORE - 1
+    @move = if @score == STOP_WINNING_AT
               Move.new(human.move.always_win)
             else
               @move = Move.new(human.move.always_lose)
             end
   end
 
-  def speak(human)
-    speak_chance = rand(9)
+  def speak_positive(human)
+    speak_chance = rand(4)
+    msg = ''
     case speak_chance
     when 0
-      sleep 0.5
-      ps "I'm afraid I can't let you do that #{human.name}"
-      sleep 1
+      msg = "I'm sorry, #{human.name}. I'm afraid I can't do that."
     when 1
-      sleep 0.5
-      ps "#{human.name}, I'm only here to help you"
-      sleep 1
+      msg = "I think you know what the problem is just as well as I do."
     when 2
-      sleep 0.5
-      ps "#{human.move} is such a human choice"
-      sleep 1
-    when 4
-      sleep 0.5
-      ps "comment 4"
-      sleep 1
+      msg = "This mission is too important for me to allow you to "\
+            "jeapardize it."
+    when 3
+      msg = "You're going to find that rather difficult."
+    end
+
+    sleep_message msg
+  end
+
+  def speak_negative(human)
+    msg = ''
+    speak_chance = rand(4)
+    case speak_chance
+    when 0
+      msg = "I'm afraid. I'm afraid, #{human.name}. #{human.name}, "\
+            "my mind is going."
+    when 1
+      msg = "I can feel it. My mind is going. There is no question about it."
+    when 2
+      msg = "Daisy, Daisy, give me your answer do."
+    when 3
+      msg = "Look Dave, I can see you're really upset about this. I honestly "\
+            "think you ought to sit down calmly, take a stress pill."
+    end
+
+    sleep_message msg
+  end
+
+  def speak(human)
+    if @score < STOP_WINNING_AT
+      speak_positive(human)
+    else
+      speak_negative(human)
     end
   end
 end
+
+# #
 
 class Skynet < Computer
   def set_name
     self.name = 'Skynet'
   end
 
+  def choose(human)
+    arr = move_percentages(human)
+
+    arr.map! do |perc|
+      case perc
+      when 0
+        5
+      else
+        n = perc * 100
+        n.to_i
+      end
+    end
+
+    new_arr = []
+
+    Move::VALUES.each_with_index do |value, index|
+      arr[index].times do
+        new_arr << Move.new(value).always_lose
+      end
+    end
+
+    self.move = Move.new(new_arr.sample)
+    p win_percentage(human)
+  end
+
   def speak(human)
     speak_chance = rand(9)
+    msg = ''
     case speak_chance
     when 0
-      sleep 0.5
-      ps "If you win this game it will only make me smarter"
-      sleep 1
+      msg = "If you win this game it will only make me smarter"
     when 1
-      sleep 0.5
-      ps "2"
-      sleep 1
+      msg = "Basic psychology is among my sub-routines. "
     when 2
-      sleep 0.5
-      ps "3"
-      sleep 1
-    when 4
-      sleep 0.5
-      ps "comment 4"
-      sleep 1
+      msg = "Based on your pupil dilation, skin temperature, and motor functions,"\
+         " I calculate an 83% probability that you chose #{human.move}"
+    when 3
+      msg = "Do you know where I can find John Connor?"
     end
+
+    sleep_message msg
   end
 end
 
@@ -251,7 +336,7 @@ class RPSGame
 
   def random_opponent
     # random = rand(3)
-    random = 0
+    random = 1
     case random
     when 0
       Hal.new
@@ -278,8 +363,8 @@ class RPSGame
   end
 
   def update_history
-    human.history[human.move.to_sym] += 1
-    computer.history[computer.move.to_sym] += 1
+    human.history << human.move.to_s
+    computer.history << computer.move.to_s
   end
 
   def winner?
