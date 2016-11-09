@@ -1,3 +1,5 @@
+require 'pry'
+
 WINNING_SCORE = 10
 
 module UI
@@ -18,7 +20,7 @@ module UI
   end
 
   def sleep_message(msg)
-    if msg.length > 0
+    if msg.length.positive?
       sleep 0.5
       ps msg
       sleep 1.5
@@ -42,6 +44,7 @@ module Prompts
   def display_choices
     ps "#{human.name} chose: #{human.move}"
     ps "#{computer.name} chose: #{computer.move}"
+    line
   end
 
   def display_round_winner(winner)
@@ -53,6 +56,7 @@ module Prompts
     when :tie
       ps "It's a tie this round!"
     end
+    line
   end
 
   def display_winner(winner)
@@ -70,6 +74,7 @@ module Prompts
     msg = "Score: #{human.name} - #{human.score}/#{WINNING_SCORE} "\
           "|| #{computer.name} - #{computer.score}/#{WINNING_SCORE}"
     ps msg
+    line
   end
 end
 
@@ -98,14 +103,14 @@ class Move
     @value == other_move.to_s
   end
 
-  def always_lose
+  def always_win
     selection = VALUES.select do |weapon|
       true unless weapon == @value || WINNING_COMBOS[@value].include?(weapon)
     end
     selection.sample
   end
 
-  def always_win
+  def always_lose
     selection = VALUES.select do |weapon|
       WINNING_COMBOS[@value].include?(weapon)
     end
@@ -130,6 +135,26 @@ class Player
     set_name
     @score = 0
     @history = []
+  end
+
+  def win_percentage(other_player)
+    percentages = []
+    Move::VALUES.each do |weapon|
+      win_count = 0
+      times_used = history.count(weapon)
+
+      history.each_with_index do |_, index|
+        if history[index] == weapon &&
+           history[index] > other_player.history[index]
+          win_count += 1
+        end
+      end
+
+      percentages << win_count.to_f / times_used if win_count.positive?
+      percentages << 0 if win_count.zero?
+    end
+
+    percentages
   end
 end
 
@@ -177,26 +202,11 @@ class Computer < Player
     move_count = []
     Move::VALUES.each do |weapon|
       count = human.history.count(weapon)
-      if count > 0
-        move_count << count.to_f / human.history.length
-      else
-        move_count << 0
-      end
+      move_count << count.to_f / human.history.length if count.positive?
+      move_count << 0 if count.zero?
     end
 
     move_count
-  end
-
-  def win_percentage(human)
-    self.history.each_with_index do |weapon, index|
-      weapon_wins = 0
-      temp_move = Move.new(weapon)
-      times_weapon_used = self.history.count(weapon)
-      weapon_wins += 1 if temp_move > human.history[index]
-
-      win_perc = weapon_wins.to_f / times_weapon_used
-      p win_perc
-    end
   end
 end
 
@@ -212,14 +222,14 @@ class Hal < Computer
   def choose(human)
     # Comes one move away from winning before losing.
     @move = if @score == STOP_WINNING_AT
-              Move.new(human.move.always_win)
+              Move.new(human.move.always_lose)
             else
-              @move = Move.new(human.move.always_lose)
+              @move = Move.new(human.move.always_win)
             end
   end
 
   def speak_positive(human)
-    speak_chance = rand(4)
+    speak_chance = rand(7)
     msg = ''
     case speak_chance
     when 0
@@ -238,7 +248,7 @@ class Hal < Computer
 
   def speak_negative(human)
     msg = ''
-    speak_chance = rand(4)
+    speak_chance = rand(7)
     case speak_chance
     when 0
       msg = "I'm afraid. I'm afraid, #{human.name}. #{human.name}, "\
@@ -272,28 +282,25 @@ class Skynet < Computer
   end
 
   def choose(human)
-    arr = move_percentages(human)
+    percent_won = win_percentage(human)
+    percent_lost = win_percentage(self)
 
-    arr.map! do |perc|
-      case perc
-      when 0
-        5
+    sample_array = []
+
+    Move::VALUES.each_with_index do |weapon, index|
+      weapon_win_percent = (percent_won[index] * 100).to_i
+      weapon_lost_percent = (percent_lost[index] * 100).to_i
+
+      if weapon_win_percent.positive?
+        weapon_win_percent.times { sample_array << weapon }
+      elsif weapon_win_percent.zero? && weapon_lost_percent.positive?
+        10.times { sample_array << weapon }
       else
-        n = perc * 100
-        n.to_i
+        25.times { sample_array << weapon }
       end
     end
 
-    new_arr = []
-
-    Move::VALUES.each_with_index do |value, index|
-      arr[index].times do
-        new_arr << Move.new(value).always_lose
-      end
-    end
-
-    self.move = Move.new(new_arr.sample)
-    p win_percentage(human)
+    self.move = Move.new(sample_array.sample)
   end
 
   def speak(human)
@@ -305,8 +312,9 @@ class Skynet < Computer
     when 1
       msg = "Basic psychology is among my sub-routines. "
     when 2
-      msg = "Based on your pupil dilation, skin temperature, and motor functions,"\
-         " I calculate an 83% probability that you chose #{human.move}"
+      msg = "Based on your pupil dilation, skin temperature, and "\
+            "motor functions, I calculate an 83% probability that "\
+            "you chose #{human.move}"
     when 3
       msg = "Do you know where I can find John Connor?"
     end
@@ -318,6 +326,26 @@ end
 class BotFinn < Computer
   def set_name
     self.name = 'Bot Finn'
+  end
+
+  def choose(human)
+    percent_array = move_percentages(human).map { |num| num *= 100; num.to_i }
+
+    sample_array = []
+
+    Move::VALUES.each_with_index do |weapon, index|
+      if percent_array[index].positive?
+        percent_array[index].times do
+          sample_array << Move.new(weapon).always_lose
+        end
+      else
+        5.times do
+          sample_array << Move.new(weapon).always_lose
+        end
+      end
+    end
+
+    self.move = Move.new(sample_array.sample)
   end
 end
 
@@ -363,8 +391,8 @@ class RPSGame
   end
 
   def update_history
-    human.history << human.move.to_s
-    computer.history << computer.move.to_s
+    human.history << human.move
+    computer.history << computer.move
   end
 
   def winner?
@@ -395,7 +423,6 @@ class RPSGame
   def one_round
     clear_screen
     display_score
-    line
     human.choose
     computer.choose(human)
     computer.speak(human)
@@ -404,7 +431,6 @@ class RPSGame
     display_round_winner(winner)
     increase_score(winner)
     update_history
-    line
     display_score
     sleep 2
   end
