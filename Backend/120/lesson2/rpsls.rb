@@ -1,5 +1,3 @@
-require 'pry'
-
 WINNING_SCORE = 10
 
 module UI
@@ -78,8 +76,6 @@ module Prompts
   end
 end
 
-# #
-
 class Move
   VALUES = ['rock', 'paper', 'scissors', 'lizard', 'spock'].freeze
 
@@ -126,8 +122,6 @@ class Move
   end
 end
 
-# #
-
 class Player
   attr_accessor :name, :score, :move, :history
 
@@ -162,8 +156,6 @@ class Player
   end
 end
 
-# #
-
 class Human < Player
   include UI
   def set_name
@@ -189,8 +181,6 @@ class Human < Player
   end
 end
 
-# #
-
 class Computer < Player
   include UI
 
@@ -210,11 +200,9 @@ class Computer < Player
       move_count << 0 if count.zero?
     end
 
-    move_count
+    move_count.map { |dec_perc| (dec_perc * 100).to_i }
   end
 end
-
-# #
 
 class Hal < Computer
   def set_name
@@ -278,8 +266,6 @@ class Hal < Computer
   end
 end
 
-# #
-
 class Skynet < Computer
   def set_name
     self.name = 'Skynet'
@@ -312,7 +298,7 @@ class Skynet < Computer
   end
 
   def speak(human)
-    speak_chance = rand(9)
+    speak_chance = rand(7)
     msg = ''
     case speak_chance
     when 0
@@ -336,24 +322,42 @@ class BotFinn < Computer
     self.name = 'Bot Finn'
   end
 
-  def choose(human)
-    percent_array = move_percentages(human).map { |num| num *= 100; num.to_i }
-
+  def fill_sample_array(percent_array)
     sample_array = []
-
     Move::VALUES.each_with_index do |weapon, index|
       if percent_array[index].positive?
         percent_array[index].times do
-          sample_array << Move.new(weapon).always_lose
+          sample_array << Move.new(weapon).always_win
         end
       else
-        5.times do
-          sample_array << Move.new(weapon).always_lose
-        end
+        5.times { sample_array << Move.new(weapon).always_win }
       end
     end
+    sample_array
+  end
+
+  def choose(human)
+    choice_percentages = move_percentages(human)
+    sample_array = fill_sample_array(choice_percentages)
 
     self.move = Move.new(sample_array.sample)
+  end
+
+  def speak(human)
+    speak_chance = rand(9)
+    msg = ''
+    case speak_chance
+    when 0
+      msg = "Hello, #{human.name}!"
+    when 1
+      msg = "Have you figured out my weakness yet?"
+    when 2
+      msg = "Did you know I'm keeping data on what you choose?"
+    when 3
+      msg = "hmmmm... I'll remember you're selection"
+    end
+
+    sleep_message msg
   end
 end
 
@@ -371,8 +375,7 @@ class RPSGame
   end
 
   def random_opponent
-    # random = rand(3)
-    random = 1
+    random = rand(3)
     case random
     when 0
       Hal.new
