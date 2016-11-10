@@ -137,24 +137,28 @@ class Player
     @history = []
   end
 
+  def weapon_win_count(weapon, other_player)
+    count = 0
+    history.each_with_index do |_, index|
+      if history[index] == weapon &&
+         history[index] > other_player.history[index]
+        count += 1
+      end
+    end
+    count
+  end
+
   def win_percentage(other_player)
     percentages = []
-    Move::VALUES.each do |weapon|
-      win_count = 0
-      times_used = history.count(weapon)
 
-      history.each_with_index do |_, index|
-        if history[index] == weapon &&
-           history[index] > other_player.history[index]
-          win_count += 1
-        end
-      end
+    Move::VALUES.each do |weapon|
+      win_count = weapon_win_count(weapon, other_player)
+      times_used = history.count(weapon)
 
       percentages << win_count.to_f / times_used if win_count.positive?
       percentages << 0 if win_count.zero?
     end
-
-    percentages
+    percentages.map { |dec_perc| (dec_perc * 100).to_i }
   end
 end
 
@@ -281,15 +285,11 @@ class Skynet < Computer
     self.name = 'Skynet'
   end
 
-  def choose(human)
-    percent_won = win_percentage(human)
-    percent_lost = win_percentage(self)
-
+  def fill_sample_array(percent_won, percent_lost)
     sample_array = []
-
     Move::VALUES.each_with_index do |weapon, index|
-      weapon_win_percent = (percent_won[index] * 100).to_i
-      weapon_lost_percent = (percent_lost[index] * 100).to_i
+      weapon_win_percent = percent_won[index]
+      weapon_lost_percent = percent_lost[index]
 
       if weapon_win_percent.positive?
         weapon_win_percent.times { sample_array << weapon }
@@ -299,6 +299,14 @@ class Skynet < Computer
         25.times { sample_array << weapon }
       end
     end
+    sample_array
+  end
+
+  def choose(human)
+    percent_won = win_percentage(human)
+    percent_lost = win_percentage(self)
+
+    sample_array = fill_sample_array(percent_won, percent_lost)
 
     self.move = Move.new(sample_array.sample)
   end
