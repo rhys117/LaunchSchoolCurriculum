@@ -193,6 +193,9 @@ end
 
 #
 rocky = Cat.new('turtese_shell')
+
+p Cat.cats_count
+
 sleepy = Cat.new('persian')
 
 p Cat.cats_count
