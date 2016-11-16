@@ -1,5 +1,3 @@
-require 'pry'
-
 module UI
   def clear_screen
     system('clear') || system('cls')
@@ -198,9 +196,7 @@ end
 class TTTGame
   include Prompts, UI
 
-  # human.marker = 'X'
   COMPUTER_MARKER = 'O'
- # FIRST_TO_MOVE = human.marker
   WINNING_SCORE = 5
 
   attr_reader :board, :human, :computer
