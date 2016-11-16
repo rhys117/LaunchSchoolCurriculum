@@ -24,10 +24,22 @@ module UI
       sleep 1.5
     end
   end
+
+  def joiner(array, char=', ', word='or')
+    if array.size > 1
+      last_part_string = " #{word} #{array.pop}"
+      first_part_string = array.join(char)
+      joined_string = first_part_string + last_part_string
+    else
+      joined_string = array[0].to_s
+    end
+    joined_string
+  end
 end
 
 module Prompts
   def display_welcome_message
+    clear_screen
     ps "Welcome to Tic, Tac Toe!"
   end
 
@@ -37,6 +49,8 @@ module Prompts
 
   def display_board
     ps "You're a #{human.marker}. Computer is a #{computer.marker}"
+    ps "Score - You're score: #{human.score}/#{TTTGame::WINNING_SCORE}. "\
+       "Computer score: #{computer.score}/#{TTTGame::WINNING_SCORE}"
     puts ""
     board.draw
     puts ""
@@ -52,12 +66,18 @@ module Prompts
 
     case board.winning_marker
     when human.marker
-      ps "You Won!"
+      ps "You Won This Round!"
     when computer.marker
-      ps "Computer Won!"
+      ps "Computer Won This Round!"
     else
-      ps "It's a Tie!"
+      ps "It's a Tie This Round!"
     end
+    display_game_winner
+  end
+
+  def display_game_winner
+    ps "You Won the Game!" if human.score == TTTGame::WINNING_SCORE
+    ps "Computer Won the Game!" if computer.score == TTTGame::WINNING_SCORE
   end
 end
 
@@ -71,6 +91,7 @@ class Board
     reset
   end
 
+  # rubocop:disable Metrics/AbcSize
   def draw
     puts "     |     |"
     puts "  #{@squares[1]}  |  #{@squares[2]}  |  #{@squares[3]}"
@@ -84,6 +105,7 @@ class Board
     puts "  #{@squares[7]}  |  #{@squares[8]}  |  #{@squares[9]}"
     puts "     |     |"
   end
+  # rubocop:enable Metrics/AbcSize
 
   def []=(key, marker)
     @squares[key].marker = marker
@@ -97,8 +119,23 @@ class Board
     unmarked_keys.empty?
   end
 
-  def someone_won?
+  def someone_won_round?
     !!winning_marker
+  end
+
+  def find_at_risk_square(marker)
+    initial_marker = Square::INTIIAL_MARKER
+    WINNING_LINES.each do |line|
+      squares = @squares.values_at(*line)
+      squares.map!(&:marker)
+      next unless squares.count(marker) == 2 &&
+                  squares.count(initial_marker) == 1
+      temp_array = line.select do |sq|
+        @squares[sq].marker == initial_marker
+      end
+      return temp_array.join.to_i
+    end
+    nil
   end
 
   def winning_marker
@@ -125,7 +162,7 @@ class Board
 end
 
 class Square
-  INTIIAL_MARKER = " "
+  INTIIAL_MARKER = " ".freeze
 
   attr_accessor :marker
 
@@ -148,17 +185,21 @@ end
 
 class Player
   attr_reader :marker
+  attr_accessor :score
+
   def initialize(marker)
-    @marker= marker
+    @marker = marker
+    @score = 0
   end
 end
 
 class TTTGame
   include Prompts, UI
 
-  HUMAN_MARKER = 'X'
-  COMPUTER_MARKER = 'O'
+  HUMAN_MARKER = 'X'.freeze
+  COMPUTER_MARKER = 'O'.freeze
   FIRST_TO_MOVE = HUMAN_MARKER
+  WINNING_SCORE = 5
 
   attr_reader :board, :human, :computer
 
@@ -170,34 +211,44 @@ class TTTGame
   end
 
   def play
-    clear_screen
     display_welcome_message
+    # set_names_and_marker
     loop do
       display_board
-      loop do
-        human_moves
-        break if board.someone_won? || board.full?
+      one_round
+      reset_round
 
-        computer_moves
-        break if board.full? || board.someone_won?
-
-        clear_screen_and_display_board
+      if someone_won_game?
+        break unless play_again?
+        reset_game
       end
-      display_result
-      break unless play_again?
-      reset
     end
     display_goodbye_message
   end
 
   private
 
+  def someone_won_game?
+    human.score == WINNING_SCORE || computer.score == WINNING_SCORE
+  end
+
+  def one_round
+    loop do
+      current_player_moves
+      break if board.someone_won_round? || board.full?
+      clear_screen_and_display_board
+    end
+    adjust_score
+    display_result
+    sleep 1
+  end
+
   def human_turn?
     @current_marker == HUMAN_MARKER
   end
 
   def current_player_moves
-    if human_turn
+    if human_turn?
       human_moves
       @current_marker = COMPUTER_MARKER
     else
@@ -207,7 +258,7 @@ class TTTGame
   end
 
   def human_moves
-    ps "Choose a square #{board.unmarked_keys.join(', ')}: "
+    ps "Choose a square #{joiner(board.unmarked_keys)}: "
     square = nil
     loop do
       square = gets.chomp.to_i
@@ -218,8 +269,21 @@ class TTTGame
     board[square] = human.marker
   end
 
+  def computer_move_square
+    square = board.find_at_risk_square(COMPUTER_MARKER)
+    return square if !square.nil?
+    square = board.find_at_risk_square(HUMAN_MARKER)
+    return square if !square.nil?
+    board.unmarked_keys.sample
+  end
+
   def computer_moves
-    board[board.unmarked_keys.sample] = computer.marker
+    board[computer_move_square] = computer.marker
+  end
+
+  def adjust_score
+    human.score += 1 if board.winning_marker == HUMAN_MARKER
+    computer.score += 1 if board.winning_marker == COMPUTER_MARKER
   end
 
   def play_again?
@@ -234,12 +298,16 @@ class TTTGame
     answer == 'y'
   end
 
-  def reset
+  def reset_round
     board.reset
     clear_screen
-    ps "Let's play again!"
-    puts ''
     @current_marker = FIRST_TO_MOVE
+  end
+
+  def reset_game
+    reset_round
+    human.score = 0
+    computer.score = 0
   end
 end
 
