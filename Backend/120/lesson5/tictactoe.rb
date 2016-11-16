@@ -40,7 +40,8 @@ end
 module Prompts
   def display_welcome_message
     clear_screen
-    ps "Welcome to Tic, Tac Toe!"
+    ps "Welcome to Tic, Tac Toe #{human.name}!"
+    ps "Today you'll be facing #{computer.name}"
   end
 
   def display_goodbye_message
@@ -48,7 +49,7 @@ module Prompts
   end
 
   def display_board
-    ps "You're a #{human.marker}. Computer is a #{computer.marker}"
+    ps "#{human.name} is a #{human.marker}. #{computer.name} is a #{computer.marker}"
     ps "Score - You're score: #{human.score}/#{TTTGame::WINNING_SCORE}. "\
        "Computer score: #{computer.score}/#{TTTGame::WINNING_SCORE}"
     puts ""
@@ -76,8 +77,8 @@ module Prompts
   end
 
   def display_game_winner
-    ps "You Won the Game!" if human.score == TTTGame::WINNING_SCORE
-    ps "Computer Won the Game!" if computer.score == TTTGame::WINNING_SCORE
+    ps "#{human.name} Won the Game!" if human.score == TTTGame::WINNING_SCORE
+    ps "#{computer.name} Won the Game!" if computer.score == TTTGame::WINNING_SCORE
   end
 end
 
@@ -185,9 +186,10 @@ end
 
 class Player
   attr_reader :marker
-  attr_accessor :score
+  attr_accessor :name, :score
 
-  def initialize(marker)
+  def initialize(name, marker)
+    @name = name
     @marker = marker
     @score = 0
   end
@@ -196,23 +198,23 @@ end
 class TTTGame
   include Prompts, UI
 
-  HUMAN_MARKER = 'X'.freeze
-  COMPUTER_MARKER = 'O'.freeze
-  FIRST_TO_MOVE = HUMAN_MARKER
+  # human.marker = 'X'
+  COMPUTER_MARKER = 'O'
+ # FIRST_TO_MOVE = human.marker
   WINNING_SCORE = 5
 
   attr_reader :board, :human, :computer
 
   def initialize
+    clear_screen
     @board = Board.new
-    @human = Player.new(HUMAN_MARKER)
-    @computer = Player.new(COMPUTER_MARKER)
-    @current_marker = FIRST_TO_MOVE
+    set_player_name_and_marker
+    @computer = Player.new('Hal', COMPUTER_MARKER)
+    @current_marker = human.marker
   end
 
   def play
     display_welcome_message
-    # set_names_and_marker
     loop do
       display_board
       one_round
@@ -227,6 +229,26 @@ class TTTGame
   end
 
   private
+
+  def set_player_name_and_marker
+    name = ''
+    marker = ''
+
+    loop do
+      ps "Whats you're name?"
+      name = gets.chomp.strip
+      break unless name.empty?
+      ps "Whoops! you must have a name!"
+    end
+
+    loop do
+      ps "Choose a marker!"
+      marker = gets.chomp.strip
+      break if marker.length == 1
+      ps "Whoops! You're marker must be only one character."
+    end
+    @human = Player.new(name, marker)
+  end
 
   def someone_won_game?
     human.score == WINNING_SCORE || computer.score == WINNING_SCORE
@@ -244,7 +266,7 @@ class TTTGame
   end
 
   def human_turn?
-    @current_marker == HUMAN_MARKER
+    @current_marker == human.marker
   end
 
   def current_player_moves
@@ -253,7 +275,7 @@ class TTTGame
       @current_marker = COMPUTER_MARKER
     else
       computer_moves
-      @current_marker = HUMAN_MARKER
+      @current_marker = human.marker
     end
   end
 
@@ -272,7 +294,7 @@ class TTTGame
   def computer_move_square
     square = board.find_at_risk_square(COMPUTER_MARKER)
     return square if !square.nil?
-    square = board.find_at_risk_square(HUMAN_MARKER)
+    square = board.find_at_risk_square(human.marker)
     return square if !square.nil?
     board.unmarked_keys.sample
   end
@@ -282,7 +304,7 @@ class TTTGame
   end
 
   def adjust_score
-    human.score += 1 if board.winning_marker == HUMAN_MARKER
+    human.score += 1 if board.winning_marker == human.marker
     computer.score += 1 if board.winning_marker == COMPUTER_MARKER
   end
 
@@ -301,7 +323,7 @@ class TTTGame
   def reset_round
     board.reset
     clear_screen
-    @current_marker = FIRST_TO_MOVE
+    @current_marker = human.marker
   end
 
   def reset_game
