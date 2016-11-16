@@ -71,7 +71,7 @@ end
 
 def place_piece!(board, current_player)
   square = nil
-  
+
   if current_player == 'player'
     loop do
       prompt "Choose a square #{joiner(empty_squares(board))}"
@@ -156,7 +156,7 @@ loop do
 
     prompt "Round: #{game_counter + 1}" unless game_counter.zero?
     prompt "Score. Player: #{player_wins}; Computer: #{computer_wins}" unless game_counter.zero?
-    
+
     place_piece!(board, current_player)
     current_player = alternate_player(current_player)
     break if someone_won?(board) || board_full?(board)

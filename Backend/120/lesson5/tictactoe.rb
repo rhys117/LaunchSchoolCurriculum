@@ -31,11 +31,13 @@ module Prompts
     ps "Welcome to Tic, Tac Toe!"
   end
 
-  def goodbye_message
-    ps "Thanks for playing!"
+  def display_goodbye_message
+    ps "Thanks for playing Tic, Tac, Toe!"
   end
 
-  def display_board
+  def display_board(clear = true)
+    clear_screen if clear
+    ps "You're a #{human.marker}. Computer is a #{computer.marker}"
     puts "     |     |"
     puts "  #{board.get_square_at(1)}  |  #{board.get_square_at(2)}  |  #{board.get_square_at(3)}"
     puts "     |     |"
@@ -48,14 +50,29 @@ module Prompts
     puts "  #{board.get_square_at(7)}  |  #{board.get_square_at(8)}  |  #{board.get_square_at(9)}"
     puts "     |     |"
   end
+
+  def display_result
+    display_board
+
+    case board.detect_winner
+    when human.marker
+      ps "You Won!"
+    when computer.marker
+      ps "Computer Won!"
+    else
+      ps "It's a Tie!"
+    end
+  end
 end
 
 class Board
-  INTIIAL_MARKER = " "
+  WINNING_LINES =  [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
+                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
+                   [[1, 5, 9], [3, 5, 7]]
 
   def initialize
     @squares = {}
-    (1..9).each { |key| @squares[key] = Square.new(INTIIAL_MARKER) }
+    reset
   end
 
   def get_square_at(key)
@@ -65,17 +82,61 @@ class Board
   def set_square_at(key, marker)
     @squares[key].marker = marker
   end
+
+  def unmarked_keys
+    @squares.keys.select { |key| @squares[key].unmarked? }
+  end
+
+  def full?
+    unmarked_keys.empty?
+  end
+
+  def someone_won?
+    !!detect_winner
+  end
+
+  def count_human_marker(squares)
+    squares.collect(&:marker).count(TTTGame::HUMAN_MARKER)
+  end
+
+  def count_computer_marker(squares)
+    squares.collect(&:marker).count(TTTGame::COMPUTER_MARKER)
+  end
+
+  def detect_winner
+    human_marker = TTTGame::HUMAN_MARKER
+    computer_marker = TTTGame::COMPUTER_MARKER
+
+    WINNING_LINES.each do |line|
+      if count_human_marker(@squares.values_at(*line)) == 3
+        return human_marker
+      elsif count_computer_marker(@squares.values_at(*line)) == 3
+        return computer_marker
+      end
+    end
+    nil
+  end
+
+  def reset
+    (1..9).each { |key| @squares[key] = Square.new }
+  end
 end
 
 class Square
+  INTIIAL_MARKER = " "
+
   attr_accessor :marker
 
-  def initialize(marker)
+  def initialize(marker=INTIIAL_MARKER)
     @marker = marker
   end
 
   def to_s
     @marker
+  end
+
+  def unmarked?
+    marker == INTIIAL_MARKER
   end
 end
 
@@ -83,10 +144,6 @@ class Player
   attr_reader :marker
   def initialize(marker)
     @marker= marker
-  end
-
-  def play
-
   end
 end
 
@@ -105,11 +162,11 @@ class TTTGame
   end
 
   def human_moves
-    ps "Choose a square between 1 - 9: "
+    ps "Choose a square #{board.unmarked_keys.join(', ')}: "
     square = nil
     loop do
       square = gets.chomp.to_i
-      break if (1..9).include?(square)
+      break if board.unmarked_keys.include?(square)
       ps "Sorry, not a valid choice"
     end
 
@@ -117,23 +174,41 @@ class TTTGame
   end
 
   def computer_moves
-    board.set_square_at((1..9).to_a.sample, computer.marker)
+    board.set_square_at(board.unmarked_keys.sample, computer.marker)
+  end
+
+  def play_again?
+    answer = nil
+    loop do
+      ps "Would you like to play again? (y/n)"
+      answer = gets.chomp.downcase
+      break if %w(y n).include? answer
+      ps "Sorry must be y or n"
+    end
+
+    answer == 'y'
   end
 
   def play
     display_welcome_message
-    display_board
     loop do
-      human_moves
+      display_board(false)
+      loop do
+        human_moves
+        break if board.someone_won? || board.full?
 
-      # break if someone_won? || board_full?
+        computer_moves
+        break if board.full? || board.someone_won?
 
-      computer_moves
-      
-      display_board
-      # break if someone_won? || board_full?
+        display_board
+      end
+      display_result
+      break unless play_again?
+      board.reset
+      clear_screen
+      ps "Let's play again!"
+      puts ''
     end
-    display_result
     display_goodbye_message
   end
 end
