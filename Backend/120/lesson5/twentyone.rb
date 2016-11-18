@@ -1,30 +1,71 @@
+module UI
+  def clear_screen
+    system('clear') || system('cls')
+  end
+
+  def ps(msg)
+    puts "--> #{msg}"
+  end
+
+  def line_break
+    puts ''
+  end
+
+  def line
+    puts "----------------------------------"
+  end
+
+  def sleep_message(msg)
+    if msg.length.positive?
+      sleep 0.5
+      ps msg
+      sleep 1.5
+    end
+  end
+
+  def joiner(array, char=', ', word='and')
+    if array.size > 1
+      last_part_string = " #{word} #{array.last}"
+      first_part_string = array[0..-2].join(char)
+      joined_string = first_part_string + last_part_string
+    else
+      joined_string = array[0].to_s
+    end
+    joined_string
+  end
+end
+
 class Participant
   attr_accessor :cards
+  attr_reader :name
 
   def initialize
-
+    set_name
   end
 
-  def hit
-
+  def set_name
+    @name = 'Player'
   end
 
-  def stay
-
+  def score
+    score = self.cards.map(&:value).inject(:+)
   end
 
-  def busted?
-
-  end
-
-  def total
-
+  def bust?
+    self.score > 21
   end
 end
 
 class Player < Participant
-  def initialize
+  include UI
 
+  INITIAL_CHIP_COUNT = 25
+
+  attr_accessor :chips
+
+  def initialize
+    set_name
+    @chips = INITIAL_CHIP_COUNT
   end
 end
 
@@ -57,6 +98,10 @@ class Deck
     dealt_cards = []
     2.times { dealt_cards << random_card! }
     dealt_cards
+  end
+
+  def hit(player)
+    player.cards << random_card!
   end
 end
 
@@ -123,6 +168,10 @@ class Card
 end
 
 class TwentyOneGame
+  include UI
+
+  attr_accessor :human, :dealer, :deck
+
   def initialize
     @human = Player.new
     @dealer = Dealer.new
@@ -130,18 +179,55 @@ class TwentyOneGame
   end
 
   def play
+    welcome_message
     deal_cards
-    puts @human.cards
-    puts @dealer.cards
-    #show_initial_cards
-    #player_turn
+    show_hand_with_hidden
+    player_turn
     #dealer_turn
     #show_result
   end
 
+  def welcome_message
+    clear_screen
+    ps "Welcome to 21!"
+  end
+
+  def goodbye_message
+    ps "Thanks for playing 21!"
+  end
+
   def deal_cards
-    @human.cards = @deck.two_cards
-    @dealer.cards = @deck.two_cards
+    human.cards = deck.two_cards
+    dealer.cards = deck.two_cards
+  end
+
+  def show_hand_with_hidden
+    ps "#{human.name} has #{joiner(human.cards)}"
+    ps "Score: #{human.score}"
+    line
+    ps "Dealer has #{dealer.cards.first} and a hidden card"
+    line
+  end
+
+  def hit_or_stay
+    answer = nil
+    loop do
+      ps "Would you like to (H)it or (S)tay"
+      answer = gets.chomp.downcase
+      break if ['h', 's'].include?(answer)
+      ps "Sorry must select either H for Hit or S for Stay"
+    end
+    answer
+  end
+
+  def player_turn
+    loop do
+      answer = hit_or_stay
+      deck.hit(human) if answer == 'h'
+      clear_screen
+      show_hand_with_hidden
+      break if answer == 's' || human.bust?
+    end
   end
 end
 
