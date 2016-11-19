@@ -231,7 +231,7 @@ class TTTGame
     marker = ''
 
     loop do
-      ps "Whats you're name?"
+      ps "What's your name?"
       name = gets.chomp.strip
       break unless name.empty?
       ps "Whoops! you must have a name!"

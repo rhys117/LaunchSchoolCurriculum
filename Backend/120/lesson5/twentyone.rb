@@ -1,3 +1,5 @@
+require 'pry'
+
 module UI
   def clear_screen
     system('clear') || system('cls')
@@ -63,13 +65,23 @@ end
 class Player < Participant
   include UI
 
-  INITIAL_CHIP_COUNT = 25
-
-  attr_accessor :chips
+  attr_reader :chips
 
   def initialize
     set_name
-    @chips = INITIAL_CHIP_COUNT
+    @chips = Chips.new
+  end
+
+  def set_name
+    name = ''
+
+    loop do
+      ps "What's your name?"
+      name = gets.chomp.strip
+      break unless name.empty?
+      ps "Whoops! you must have a name!"
+    end
+    @name = name
   end
 end
 
@@ -181,24 +193,84 @@ class Card
   end
 end
 
+class Chips
+  include UI
+  attr_accessor :total, :bet
+
+  INITIAL_CHIP_COUNT = 25
+
+  def initialize
+    @total = INITIAL_CHIP_COUNT
+    @bet = 0
+  end
+
+  def set_bet_amount
+    ps "You have #{@total} chips"
+    loop do
+      ps "How many would you like to bet?"
+      @bet = gets.chomp.to_i
+      break if chips_bet_valid?
+      ps "Whoops! you must choose a valid amount. "\
+         "You have #{@total} chips"
+    end
+    @total = @total - @bet
+    clear_screen
+  end
+
+  def chips_bet_valid?
+    return true if @bet <= @total && @bet.positive?
+    false
+  end
+
+  def winnings
+    @bet * 2
+  end
+
+  def to_s
+    @total
+  end
+
+  def update_total(winner)
+    @total = case winner
+             when :player
+               @total + winnings
+             when :dealer
+               @total
+             when :tie
+               @total + @bet
+             end
+  end
+
+end
+
 class TwentyOneGame
   include UI
 
   attr_accessor :human, :dealer, :deck
 
   def initialize
+    clear_screen
+    welcome_message
     @human = Player.new
     @dealer = Dealer.new
     @deck = Deck.new
   end
 
   def play
-    welcome_message
-    deal_cards
-    show_hand_with_hidden
-    player_turn
-    dealer_turn unless human.bust?
-    show_result
+    loop do
+      clear_screen
+      # lost message if no_chips
+      human.chips.set_bet_amount
+      deal_cards
+      show_hand_with_hidden
+      player_turn
+      dealer_turn unless human.bust?
+      winner = who_won
+      show_result(winner)
+      human.chips.update_total(winner)
+      binding.pry
+      sleep 2
+    end
   end
 
   def welcome_message
@@ -215,30 +287,52 @@ class TwentyOneGame
     dealer.cards = deck.two_cards
   end
 
-  def show_hand_with_hidden
+  def human_hand_and_bet
     ps "#{human.name} has #{joiner(human.cards)}"
     ps "Score: #{human.score}"
+    ps "Betting: #{human.chips.bet}"
     line
+  end
+
+  def show_hand_with_hidden
+    human_hand_and_bet
     ps "Dealer has #{dealer.cards.first} and a hidden card"
     ps "Score: #{dealer.cards.first.value} + ?"
     line
   end
 
   def show_hands
-    ps "#{human.name} has #{joiner(human.cards)}"
-    ps "Score: #{human.score}"
-    line
+    human_hand_and_bet
     ps "Dealer has #{joiner(dealer.cards)}"
     ps "Score: #{dealer.score}"
     line
   end
 
-  def show_result
+  def who_won
+    if human.bust?
+      :dealer
+    elsif dealer.bust?
+      :player
+    elsif human.score > dealer.score
+      :player
+    elsif human.score == dealer.score
+      :tie
+    else
+      :dealer
+    end
+  end
+
+  def show_result(winner)
     if human.bust?
       ps "#{human.name} Busted! #{dealer.name} Wins!"
     elsif dealer.bust?
       ps "#{dealer.name} Busted! #{human.name} Wins!"
+    elsif winner == :tie
+      ps "It's a draw!"
+    elsif winner == :player
+      ps "#{human.name} Won!"
     else
+      ps "#{dealer.name} Won!"
     end
   end
 

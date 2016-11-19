@@ -151,7 +151,7 @@ class Player
 
       percentages << win_count.to_f / times_used if win_count.positive?
       percentages << 0 if win_count.zero?
-    end
+    end 
     percentages.map { |dec_perc| (dec_perc * 100).to_i }
   end
 end
