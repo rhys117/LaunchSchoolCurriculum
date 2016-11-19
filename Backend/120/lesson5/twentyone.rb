@@ -48,11 +48,15 @@ class Participant
   end
 
   def score
-    score = self.cards.map(&:value).inject(:+)
+    score = cards.map(&:value).inject(:+)
+    cards.select { |card| card.face == 'Ace' }.count.times do
+      score -= 10 if score > 21
+    end
+    score
   end
 
   def bust?
-    self.score > 21
+    score > 21
   end
 end
 
@@ -71,7 +75,7 @@ end
 
 class Dealer < Participant
   def initialize
-
+    @name = 'Dealer'
   end
 end
 
@@ -119,16 +123,26 @@ class Card
   end
 
   def find_value
-    number = 0
+    case cards_to_suit_number
+    when 1
+      11
+    when 10..13
+      10
+    else
+      cards_to_suit_number
+    end
+  end
+
+  def cards_to_suit_number
     case @card_of_52
     when 1..13
-      number = @card_of_52
+      @card_of_52
     when 14..26
-      number = @card_of_52 - 13
+      @card_of_52 - 13
     when 27..39
-      suit = @card_of_52 - 26
+      @card_of_52 - 26
     when 40..52
-      suit = @card_of_52 - 39
+      @card_of_52 - 39
     end
   end
 
@@ -148,7 +162,7 @@ class Card
   end
 
   def find_face
-    case @value
+    case cards_to_suit_number
     when 1
       'Ace'
     when 2..10
@@ -183,8 +197,8 @@ class TwentyOneGame
     deal_cards
     show_hand_with_hidden
     player_turn
-    #dealer_turn
-    #show_result
+    dealer_turn unless human.bust?
+    show_result
   end
 
   def welcome_message
@@ -206,7 +220,26 @@ class TwentyOneGame
     ps "Score: #{human.score}"
     line
     ps "Dealer has #{dealer.cards.first} and a hidden card"
+    ps "Score: #{dealer.cards.first.value} + ?"
     line
+  end
+
+  def show_hands
+    ps "#{human.name} has #{joiner(human.cards)}"
+    ps "Score: #{human.score}"
+    line
+    ps "Dealer has #{joiner(dealer.cards)}"
+    ps "Score: #{dealer.score}"
+    line
+  end
+
+  def show_result
+    if human.bust?
+      ps "#{human.name} Busted! #{dealer.name} Wins!"
+    elsif dealer.bust?
+      ps "#{dealer.name} Busted! #{human.name} Wins!"
+    else
+    end
   end
 
   def hit_or_stay
@@ -228,6 +261,23 @@ class TwentyOneGame
       show_hand_with_hidden
       break if answer == 's' || human.bust?
     end
+  end
+
+  def dealer_turn
+    loop do
+      clear_screen
+      show_hands
+      sleep 1
+      if dealer.score < 17
+        deck.hit(dealer)
+        ps "Dealer Hits!"
+        sleep 1
+      end
+      break if dealer.bust? || dealer.score >= 17
+    end
+    clear_screen
+    show_hands
+    sleep 1
   end
 end
 
