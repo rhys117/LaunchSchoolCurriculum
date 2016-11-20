@@ -1,5 +1,3 @@
-require 'pry'
-
 module UI
   def clear_screen
     system('clear') || system('cls')
@@ -366,6 +364,7 @@ class TwentyOneGame
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def show_result(winner)
     if human.bust?
       ps "#{human.name} Busted! #{dealer.name} Wins!"
@@ -379,6 +378,7 @@ class TwentyOneGame
       ps "#{dealer.name} Won!"
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def hit_or_stay
     answer = nil
