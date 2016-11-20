@@ -116,6 +116,10 @@ class Deck
     dealt_cards
   end
 
+  def shuffle
+    @cards = new_pack
+  end
+
   def hit(player)
     player.cards << random_card!
   end
@@ -276,6 +280,7 @@ class TwentyOneGame
       deal_and_player_turn
       dealer_turn unless human.bust?
       show_winner_and_update_result
+      deck.shuffle
     end
     goodbye_message
   end
