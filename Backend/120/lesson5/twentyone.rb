@@ -205,6 +205,8 @@ class Chips
   end
 
   def set_bet_amount
+    clear_screen
+    line
     ps "You have #{@total} chips"
     loop do
       ps "How many would you like to bet?"
@@ -227,7 +229,15 @@ class Chips
   end
 
   def to_s
-    @total
+    @total.to_s
+  end
+
+  def no_chips?
+    @total == 0
+  end
+
+  def reset
+    @total = INITIAL_CHIP_COUNT
   end
 
   def update_total(winner)
@@ -258,8 +268,10 @@ class TwentyOneGame
 
   def play
     loop do
-      clear_screen
-      # lost message if no_chips
+      if human.chips.no_chips?
+        break unless play_again?
+        human.chips.reset
+      end
       human.chips.set_bet_amount
       deal_cards
       show_hand_with_hidden
@@ -268,14 +280,15 @@ class TwentyOneGame
       winner = who_won
       show_result(winner)
       human.chips.update_total(winner)
-      binding.pry
       sleep 2
     end
+    goodbye_message
   end
 
   def welcome_message
-    clear_screen
+    line
     ps "Welcome to 21!"
+    line
   end
 
   def goodbye_message
@@ -285,6 +298,21 @@ class TwentyOneGame
   def deal_cards
     human.cards = deck.two_cards
     dealer.cards = deck.two_cards
+  end
+
+  def play_again?
+    clear_screen
+    line
+    ps "Sorry! You're out of chips. The dealer has taken you for everything!!"
+    answer = ''
+    loop do
+      ps "Would you like to play again? (y/n)"
+      answer = gets.chomp.downcase.strip
+      break if ['y', 'n', 'q'].include?(answer)
+      ps "Sorry, must choose y for yes or n for no."
+    end
+    return false if answer == 'n' || answer == 'q'
+    true
   end
 
   def human_hand_and_bet
@@ -339,12 +367,18 @@ class TwentyOneGame
   def hit_or_stay
     answer = nil
     loop do
-      ps "Would you like to (H)it or (S)tay"
+      ps "Would you like to (H)it or (S)tay. (Q)uit"
       answer = gets.chomp.downcase
       break if ['h', 's'].include?(answer)
+      quit if answer == 'q'
       ps "Sorry must select either H for Hit or S for Stay"
     end
     answer
+  end
+
+  def quit
+    goodbye_message
+    exit
   end
 
   def player_turn
