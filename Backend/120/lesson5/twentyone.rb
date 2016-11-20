@@ -122,7 +122,7 @@ class Deck
 end
 
 class Card
-  SUITES = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
+  SUITES = ['Diamonds', 'Hearts', 'Spades', 'Clubs'].freeze
   FACES = (1..13).to_a
 
   attr_reader :suit, :face, :value
@@ -215,7 +215,7 @@ class Chips
       ps "Whoops! you must choose a valid amount. "\
          "You have #{@total} chips"
     end
-    @total = @total - @bet
+    @total -= @bet
     clear_screen
   end
 
@@ -233,7 +233,7 @@ class Chips
   end
 
   def no_chips?
-    @total == 0
+    @total.zero?
   end
 
   def reset
@@ -250,10 +250,11 @@ class Chips
                @total + @bet
              end
   end
-
 end
 
 class TwentyOneGame
+  STOPPING_SCORE = 17
+
   include UI
 
   attr_accessor :human, :dealer, :deck
@@ -272,17 +273,27 @@ class TwentyOneGame
         break unless play_again?
         human.chips.reset
       end
-      human.chips.set_bet_amount
-      deal_cards
-      show_hand_with_hidden
-      player_turn
+      deal_and_player_turn
       dealer_turn unless human.bust?
-      winner = who_won
-      show_result(winner)
-      human.chips.update_total(winner)
-      sleep 2
+      show_winner_and_update_result
     end
     goodbye_message
+  end
+
+  private
+
+  def deal_and_player_turn
+    human.chips.set_bet_amount
+    deal_cards
+    show_hand_with_hidden
+    player_turn
+  end
+
+  def show_winner_and_update_result
+    winner = who_won
+    show_result(winner)
+    human.chips.update_total(winner)
+    sleep 2
   end
 
   def welcome_message
@@ -391,20 +402,26 @@ class TwentyOneGame
     end
   end
 
-  def dealer_turn
+  def hit_until_stopping_score
     loop do
       clear_screen
       show_hands
       sleep 1
-      if dealer.score < 17
+      if dealer.score < STOPPING_SCORE
         deck.hit(dealer)
         ps "Dealer Hits!"
         sleep 1
       end
-      break if dealer.bust? || dealer.score >= 17
+      break if dealer.bust? || dealer.score >= STOPPING_SCORE
     end
+  end
+
+  def dealer_turn
+    hit_until_stopping_score
     clear_screen
     show_hands
+    ps "Dealer Holds"
+    line
     sleep 1
   end
 end
