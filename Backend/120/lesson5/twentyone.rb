@@ -99,7 +99,7 @@ class Deck
   def new_pack
     cards = []
     52.times do |num|
-      cards << Card.new(num + 1)
+      cards << Card.new(num)
     end
     cards
   end
@@ -124,70 +124,36 @@ class Deck
 end
 
 class Card
-  SUITES = ['Diamonds', 'Hearts', 'Spades', 'Clubs'].freeze
-  FACES = (1..13).to_a
+  SUITES = %w(Diamonds Hearts Spades Clubs).freeze
+  FACES = %w(2 3 4 5 6 7 8 9 10 Jack Queen King Ace).freeze
+  DECK_VALUES = SUITES.product(FACES)
 
   attr_reader :suit, :face, :value
 
   def initialize(num)
     @card_index = num
-    @value = find_value
     @suit = find_suit
     @face = find_face
+    @value = find_value
   end
 
   def find_value
-    case cards_to_suit_number
-    when 1
+    case @face
+    when "Ace"
       11
-    when 10..13
+    when "Jack", "Queen", "King"
       10
     else
-      cards_to_suit_number
-    end
-  end
-
-  def cards_to_suit_number
-    case @card_index
-    when 1..13
-      @card_index
-    when 14..26
-      @card_index - 13
-    when 27..39
-      @card_index - 26
-    when 40..52
-      @card_index - 39
+      @face.to_i
     end
   end
 
   def find_suit
-    suit = nil
-    case @card_index
-    when 1..13
-      suit = SUITES[0]
-    when 14..26
-      suit = SUITES[1]
-    when 27..39
-      suit = SUITES[2]
-    when 40..52
-      suit = SUITES[3]
-    end
-    suit
+    DECK_VALUES[@card_index][0]
   end
 
   def find_face
-    case cards_to_suit_number
-    when 1
-      'Ace'
-    when 2..10
-      @value.to_s
-    when 11
-      'Jack'
-    when 12
-      'Queen'
-    when 13
-      'King'
-    end
+    DECK_VALUES[@card_index][1]
   end
 
   def to_s
