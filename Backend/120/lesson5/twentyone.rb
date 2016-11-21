@@ -114,7 +114,7 @@ class Deck
     dealt_cards
   end
 
-  def shuffle
+  def refresh
     @cards = new_pack
   end
 
@@ -130,7 +130,7 @@ class Card
   attr_reader :suit, :face, :value
 
   def initialize(num)
-    @card_of_52 = num
+    @card_index = num
     @value = find_value
     @suit = find_suit
     @face = find_face
@@ -148,21 +148,21 @@ class Card
   end
 
   def cards_to_suit_number
-    case @card_of_52
+    case @card_index
     when 1..13
-      @card_of_52
+      @card_index
     when 14..26
-      @card_of_52 - 13
+      @card_index - 13
     when 27..39
-      @card_of_52 - 26
+      @card_index - 26
     when 40..52
-      @card_of_52 - 39
+      @card_index - 39
     end
   end
 
   def find_suit
     suit = nil
-    case @card_of_52
+    case @card_index
     when 1..13
       suit = SUITES[0]
     when 14..26
@@ -278,7 +278,7 @@ class TwentyOneGame
       deal_and_player_turn
       dealer_turn unless human.bust?
       show_winner_and_update_result
-      deck.shuffle
+      deck.refresh
     end
     goodbye_message
   end
@@ -325,8 +325,7 @@ class TwentyOneGame
       break if ['y', 'n', 'q'].include?(answer)
       ps "Sorry, must choose y for yes or n for no."
     end
-    return false if answer == 'n' || answer == 'q'
-    true
+    answer == 'y'
   end
 
   def human_hand_and_bet
@@ -364,21 +363,22 @@ class TwentyOneGame
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def show_result(winner)
+    human_name = human.name
+    dealer_name = dealer.name
+
     if human.bust?
-      ps "#{human.name} Busted! #{dealer.name} Wins!"
+      ps "#{human_name} Busted! #{dealer_name} Wins!"
     elsif dealer.bust?
-      ps "#{dealer.name} Busted! #{human.name} Wins!"
+      ps "#{dealer_name} Busted! #{human_name} Wins!"
     elsif winner == :tie
       ps "It's a draw!"
     elsif winner == :player
-      ps "#{human.name} Won!"
+      ps "#{human_name} Won!"
     else
-      ps "#{dealer.name} Won!"
+      ps "#{dealer_name} Won!"
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def hit_or_stay
     answer = nil
