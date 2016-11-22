@@ -3,7 +3,7 @@ module UI
     system('clear') || system('cls')
   end
 
-  def ps(msg)
+  def puts_styled(msg)
     puts "--> #{msg}"
   end
 
@@ -11,14 +11,14 @@ module UI
     puts ''
   end
 
-  def line
+  def horizontal_line
     puts "----------------------------------"
   end
 
   def sleep_message(msg)
     if msg.length.positive?
       sleep 0.5
-      ps msg
+      puts_styled msg
       sleep 1.5
     end
   end
@@ -74,10 +74,10 @@ class Player < Participant
     name = ''
 
     loop do
-      ps "What's your name?"
+      puts_styled "What's your name?"
       name = gets.chomp.strip
       break unless name.empty?
-      ps "Whoops! you must have a name!"
+      puts_styled "Whoops! you must have a name!"
     end
     @name = name
   end
@@ -174,13 +174,13 @@ class Chips
 
   def set_bet_amount
     clear_screen
-    line
-    ps "You have #{@total} chips"
+    horizontal_line
+    puts_styled "You have #{@total} chips"
     loop do
-      ps "How many would you like to bet?"
+      puts_styled "How many would you like to bet?"
       @bet = gets.chomp.to_i
       break if chips_bet_valid?
-      ps "Whoops! you must choose a valid amount. "\
+      puts_styled "Whoops! you must choose a valid amount. "\
          "You have #{@total} chips"
     end
     @total -= @bet
@@ -188,8 +188,7 @@ class Chips
   end
 
   def chips_bet_valid?
-    return true if @bet <= @total && @bet.positive?
-    false
+    @bet <= @total && @bet.positive?
   end
 
   def winnings
@@ -266,13 +265,13 @@ class TwentyOneGame
   end
 
   def welcome_message
-    line
-    ps "Welcome to 21!"
-    line
+    horizontal_line
+    puts_styled "Welcome to 21!"
+    horizontal_line
   end
 
   def goodbye_message
-    ps "Thanks for playing 21!"
+    puts_styled "Thanks for playing 21!"
   end
 
   def deal_cards
@@ -282,37 +281,38 @@ class TwentyOneGame
 
   def play_again?
     clear_screen
-    line
-    ps "Sorry! You're out of chips. The dealer has taken you for everything!!"
+    horizontal_line
+    puts_styled "Sorry! You're out of chips. The dealer has taken you for "\
+                "everything!!"
     answer = ''
     loop do
-      ps "Would you like to play again? (y/n)"
+      puts_styled "Would you like to play again? (y/n)"
       answer = gets.chomp.downcase.strip
       break if ['y', 'n', 'q'].include?(answer)
-      ps "Sorry, must choose y for yes or n for no."
+      puts_styled "Sorry, must choose y for yes or n for no."
     end
     answer == 'y'
   end
 
   def human_hand_and_bet
-    ps "#{human.name} has #{joiner(human.cards)}"
-    ps "Score: #{human.score}"
-    ps "Betting: #{human.chips.bet}"
-    line
+    puts_styled "#{human.name} has #{joiner(human.cards)}"
+    puts_styled "Score: #{human.score}"
+    puts_styled "Betting: #{human.chips.bet}"
+    horizontal_line
   end
 
   def show_hand_with_hidden
     human_hand_and_bet
-    ps "Dealer has #{dealer.cards.first} and a hidden card"
-    ps "Score: #{dealer.cards.first.value} + ?"
-    line
+    puts_styled "Dealer has #{dealer.cards.first} and a hidden card"
+    puts_styled "Score: #{dealer.cards.first.value} + ?"
+    horizontal_line
   end
 
   def show_hands
     human_hand_and_bet
-    ps "Dealer has #{joiner(dealer.cards)}"
-    ps "Score: #{dealer.score}"
-    line
+    puts_styled "Dealer has #{joiner(dealer.cards)}"
+    puts_styled "Score: #{dealer.score}"
+    horizontal_line
   end
 
   def who_won
@@ -334,26 +334,26 @@ class TwentyOneGame
     dealer_name = dealer.name
 
     if human.bust?
-      ps "#{human_name} Busted! #{dealer_name} Wins!"
+      puts_styled "#{human_name} Busted! #{dealer_name} Wins!"
     elsif dealer.bust?
-      ps "#{dealer_name} Busted! #{human_name} Wins!"
+      puts_styled "#{dealer_name} Busted! #{human_name} Wins!"
     elsif winner == :tie
-      ps "It's a draw!"
+      puts_styled "It's a draw!"
     elsif winner == :player
-      ps "#{human_name} Won!"
+      puts_styled "#{human_name} Won!"
     else
-      ps "#{dealer_name} Won!"
+      puts_styled "#{dealer_name} Won!"
     end
   end
 
   def hit_or_stay
     answer = nil
     loop do
-      ps "Would you like to (H)it or (S)tay. (Q)uit"
+      puts_styled "Would you like to (H)it or (S)tay. (Q)uit"
       answer = gets.chomp.downcase
       break if ['h', 's'].include?(answer)
       quit if answer == 'q'
-      ps "Sorry must select either H for Hit or S for Stay"
+      puts_styled "Sorry must select either H for Hit or S for Stay"
     end
     answer
   end
@@ -380,7 +380,7 @@ class TwentyOneGame
       sleep 1
       if dealer.score < STOPPING_SCORE
         deck.hit(dealer)
-        ps "Dealer Hits!"
+        puts_styled "Dealer Hits!"
         sleep 1
       end
       break if dealer.bust? || dealer.score >= STOPPING_SCORE
@@ -391,8 +391,8 @@ class TwentyOneGame
     hit_until_stopping_score
     clear_screen
     show_hands
-    ps "Dealer Holds"
-    line
+    puts_styled "Dealer Holds"
+    horizontal_line
     sleep 1
   end
 end
