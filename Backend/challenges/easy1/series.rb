@@ -1,29 +1,12 @@
 class Series
 
   def initialize(str_num)
-    @number = str_num
+    @string_number = str_num
   end
 
   def slices(series)
-    broken_string = @number.split('').map(&:to_i)
-    index = 0
-    result = []
-    loop do
-      p broken_string[index]
-
-      break if series == index - 1
-      index += 1
-    end
-    result
-  end
-
-  def something(num_array, series)
-    series = 3
-    num_array.each do do |num|
-      num_array[index] == num_array[index + num]
-
+    broken_number = @string_number.split('').map(&:to_i)
+    raise ArgumentError if series > broken_number.size
+    broken_number.each_cons(series).to_a
   end
 end
-
-a = Series.new('01234')
-p a.slices(3)
