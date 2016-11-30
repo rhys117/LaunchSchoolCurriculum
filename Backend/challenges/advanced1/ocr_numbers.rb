@@ -17,25 +17,16 @@ class OCR
 
   def initialize(pipe_str)
     @pipe_string = pipe_str
-    @pipe_numbers = find_number_blocks
+    @breaks = find_breaks
+    @pipe_numbers = convert_multiline
   end
 
-  def find_breaks
-    breaks = []
-    @pipe_string.chars.each_with_index do |char, index|
-      if char == "\n" && @pipe_string[index + 1] == "\n"
-        @pipe_string[index] = "\nxxx"
-      end
-    end
-    breaks
-  end
-
-  def find_number_blocks
+  def find_number_blocks(str)
     pipe_numbers = []
-    @pipe_string.split("\n").each do |block|
+    str.split("\n").each do |block|
       counter = 0
       until block == '' && counter.positive?
-        p block
+        block
         pipe_numbers[counter] = '' if pipe_numbers[counter].nil?
         pipe_numbers[counter] << block.slice!(block[0..2]).rstrip + "\n"
         counter += 1
@@ -43,6 +34,40 @@ class OCR
     end
     pipe_numbers
   end
+
+  def convert_multiline
+  result = []
+    @pipe_string.split("\n\n").each do |block|
+      block.gsub!("\n\n", '')
+      result << find_number_blocks(block)
+    end
+   result.flatten
+  end
+
+  def test(tester)
+    pipe_numbers = []
+    tester.split("\n").each do |block|
+      counter = 0
+      until block == '' && counter.positive?
+        block
+        pipe_numbers[counter] = '' if pipe_numbers[counter].nil?
+        pipe_numbers[counter] << block.slice!(block[0..2]).rstrip + "\n"
+        counter += 1
+      end
+    end
+    p pipe_numbers
+  end
+
+  def find_breaks
+    breaks = []
+    @pipe_string.chars.each_with_index do |char, idx|
+      if char == "\n" && @pipe_string[idx + 1] == "\n"
+        breaks << (idx.to_f / 9).round
+      end
+    end
+    breaks
+  end
+
 
   def match_pair(block)
     NUMBER_BLOCKS.each do |key, match_block|
@@ -55,6 +80,9 @@ class OCR
     conversion = ''
     @pipe_numbers.each do |block|
       conversion << match_pair(block)
+    end
+    @breaks.reverse_each do |idx|
+      conversion.insert(idx, ',')
     end
     conversion
   end
@@ -83,6 +111,6 @@ NUMBER
     NUMBER
 
  a = OCR.new(text)
-p a.find_breaks
-p a.find_number_blocks
-p b = OCR.new(text2).find_breaks
+a.find_breaks
+p a.convert
+p b = OCR.new(text2).convert
