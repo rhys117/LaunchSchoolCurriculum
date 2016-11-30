@@ -12,9 +12,6 @@ class OCR
     '9' => " _\n|_|\n _|\n",
   }.freeze
 
-  BREAK_CONVERSION = 'xxx'
-
-
   def initialize(pipe_str)
     @pipe_string = pipe_str
     @breaks = find_breaks
@@ -44,20 +41,6 @@ class OCR
    result.flatten
   end
 
-  def test(tester)
-    pipe_numbers = []
-    tester.split("\n").each do |block|
-      counter = 0
-      until block == '' && counter.positive?
-        block
-        pipe_numbers[counter] = '' if pipe_numbers[counter].nil?
-        pipe_numbers[counter] << block.slice!(block[0..2]).rstrip + "\n"
-        counter += 1
-      end
-    end
-    p pipe_numbers
-  end
-
   def find_breaks
     breaks = []
     @pipe_string.chars.each_with_index do |char, idx|
@@ -67,7 +50,6 @@ class OCR
     end
     breaks
   end
-
 
   def match_pair(block)
     NUMBER_BLOCKS.each do |key, match_block|
@@ -88,29 +70,3 @@ class OCR
   end
 end
 
-text = <<-NUMBER.chomp
-    _  _
-  | _| _|
-  ||_  _|
-
-    _  _
-|_||_ |_
-  | _||_|
-
- _  _  _
-  ||_||_|
-  ||_| _|
-
-NUMBER
-
-  text2 = <<-NUMBER.chomp
-    _
-  || |
-  ||_|
-
-    NUMBER
-
- a = OCR.new(text)
-a.find_breaks
-p a.convert
-p b = OCR.new(text2).convert
