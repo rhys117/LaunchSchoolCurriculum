@@ -1,9 +1,4 @@
 class BeerSong
-
-  def initialize
-    @beers = 99
-  end
-
   def verses(num_of_beers, limit=num_of_beers)
     msg = ''
     until num_of_beers == limit - 1 do
@@ -14,17 +9,6 @@ class BeerSong
     msg
   end
 
-  def num_bottles(num_of_beers)
-    case num_of_beers
-    when 0
-      'no more bottles'
-    when 1
-      '1 bottle'
-    else
-      "#{num_of_beers} bottles"
-    end
-  end
-
   def verse(num_of_beers)
     msg = ''
     case num_of_beers
@@ -32,20 +16,25 @@ class BeerSong
       msg << last_verse
     when 1
       msg << one_verse
+    when 2
+      msg << two_verse
     else
-      num_bottle_str = num_bottles(num_of_beers)
-      msg << "#{num_bottle_str} of beer on the wall, #{num_bottle_str}"\
-             " of beer.\n"
+      msg << "#{num_of_beers} bottles of beer on the wall, #{num_of_beers} "\
+             "bottles of beer.\n"
       num_of_beers -= 1
-      num_bottle_str = num_bottles(num_of_beers)
-      msg << "Take one down and pass it around, #{num_bottle_str} of beer on"\
-             " the wall.\n"
+      msg << "Take one down and pass it around, #{num_of_beers} bottles of "\
+             "beer on the wall.\n"
     end
     msg
   end
 
   def lyrics
-    verses(@beers, 0)
+    verses(99, 0)
+  end
+
+  def two_verse
+    "2 bottles of beer on the wall, 2 bottles of beer.\n"\
+    "Take one down and pass it around, 1 bottle of beer on the wall.\n"
   end
 
   def one_verse
@@ -58,6 +47,3 @@ class BeerSong
     "Go to the store and buy some more, 99 bottles of beer on the wall.\n"
   end
 end
-
-puts BeerSong.new.verses(2, 0)
-puts BeerSong.new.verses(99, 98)
