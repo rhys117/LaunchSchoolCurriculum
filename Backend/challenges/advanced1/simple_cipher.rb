@@ -26,7 +26,7 @@ class Cipher
     result = ''
     msg.split('').each_with_index do |char, idx|
       shifter_array = [ALPHABET.index(char), ALPHABET.index(@key[idx])]
-      adjusted_index = p shifter_array.inject(processer)%26
+      adjusted_index = shifter_array.inject(processer)%26
       result << ALPHABET[adjusted_index]
     end
     result
