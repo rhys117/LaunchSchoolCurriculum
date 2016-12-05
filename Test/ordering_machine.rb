@@ -54,6 +54,18 @@ class Order
     @list.sort!.join("\n")
   end
 
+  def sort_again?
+    horizontal_line
+    answer = ''
+    loop do
+      puts_styled "Would you sort another list? (y/n)"
+      answer = gets.chomp.downcase.strip
+      break if ['y', 'n', 'q'].include?(answer)
+      puts_styled "Sorry, must choose y for yes or n for no."
+    end
+    answer == 'y'
+  end
+
   def process
     clear_screen
 
@@ -64,7 +76,7 @@ class Order
       @input = gets.chomp
       @list = input_to_array
       puts sort_list
-      break
+      break unless sort_again?
     end
   end
 end
