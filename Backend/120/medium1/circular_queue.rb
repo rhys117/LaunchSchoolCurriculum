@@ -1,29 +1,24 @@
 class CircularQueue
   def initialize(size)
     @buffer = [nil] * size
-    @oldest = nil
+    @oldest = 0
     @count = 0
   end
 
-  def delete_at(value)
-    testing_var = @buffer.index(value)
-    @buffer[@buffer.index(value)] = nil
-    testing_var
-
-  end
-
   def dequeue
-    value = @buffer[@oldest]
+    temp_object = @buffer[@oldest]
     @buffer[@oldest] = nil
-    @oldest = value + 1
-    value
+    @oldest = (@oldest + 1) % @buffer.size unless temp_object ==  nil
+    temp_object
   end
 
-  def enqueue(num)
-    @oldest = @oldest + 1 unless @buffer.include?(nil)
+  def enqueue(object)
+    unless @buffer[@count].nil?
+      @oldest = @count + 1 % @buffer.size
+    end
 
-    @buffer[count] = num
-    
+    @buffer[@count] = object
+    @count = (@count + 1) % @buffer.size
   end
 end
 
