@@ -4,18 +4,94 @@ class String
   end
 end
 
+class MinilangRuntimeError < RuntimeError; end
+class BadTokenError < MinilangRuntimeError; end
+class EmptyStackError < MinilangRuntimeError; end
+
 class Minilang
+  ACTIONS = %w(PUSH ADD SUB MULT DIV MOD POP PRINT)
+
   def initialize(str)
     @input = str
-    @commands = convert_input_to_commands
+    @commands = split_input
+    compute
+    @stack = []
+    @register = 0
   end
 
-  def convert_input_to_commands
+  def split_input
     array = @input.split
-    array.each_with_index do |el, idx|
-      if el.is_i?
-        
+  end
+
+  def compute
+    @commands.each do |command|
+      check_if_valid(command)
+      if command.is_i?
+        @register = command
+      else
+        command_list(command)
+      end
     end
+  end
+
+  def check_if_valid(command)
+    unless command.is_i? || ACTIONS.include?(command)
+      raise BadTokenError, "Invalid token: #{command}"
+    end
+  end
+
+  def command_list(command)
+    case command
+    when 'PUSH'
+      push
+    when 'ADD'
+      add
+    when "SUB"
+      sub
+    when "MULT"
+      mult
+    when "DIV"
+      div
+    when "MOD"
+      mod
+    when "POP"
+      pop
+    when "PRINT"
+      print
+    end
+  end
+
+  def push
+    @stack.push(@register)
+  end
+
+  def add
+    @register += pop
+  end
+
+  def pop
+    raise EmptyStackError, "Empty stack!" if @stack.empty?
+    @register = @stack.pop
+  end
+
+  def sub
+    @register -= pop
+  end
+
+  def mult
+    @register *= pop
+  end
+
+  def div
+    @register /= pop
+  end
+
+  def mod
+    @register %= pop
+  end
+
+  def print
+    puts @register
   end
 
 
