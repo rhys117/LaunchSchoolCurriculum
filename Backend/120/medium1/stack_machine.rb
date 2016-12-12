@@ -14,7 +14,6 @@ class Minilang
   def initialize(str)
     @input = str
     @commands = split_input
-    compute
     @stack = []
     @register = 0
   end
@@ -23,11 +22,11 @@ class Minilang
     array = @input.split
   end
 
-  def compute
+  def eval
     @commands.each do |command|
       check_if_valid(command)
       if command.is_i?
-        @register = command
+        @register = command.to_i
       else
         command_list(command)
       end
@@ -114,7 +113,7 @@ Minilang.new('5 PUSH 10 PRINT POP PRINT').eval
 # 10
 # 5
 
-Minilang.new('5 PUSH POP POP PRINT').eval
+# Minilang.new('5 PUSH POP POP PRINT').eval
 # Empty stack!
 
 Minilang.new('3 PUSH PUSH 7 DIV MULT PRINT ').eval
@@ -123,7 +122,7 @@ Minilang.new('3 PUSH PUSH 7 DIV MULT PRINT ').eval
 Minilang.new('4 PUSH PUSH 7 MOD MULT PRINT ').eval
 # 12
 
-Minilang.new('-3 PUSH 5 XSUB PRINT').eval
+# Minilang.new('-3 PUSH 5 XSUB PRINT').eval
 # Invalid token: XSUB
 
 Minilang.new('-3 PUSH 5 SUB PRINT').eval
