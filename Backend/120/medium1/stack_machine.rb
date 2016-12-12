@@ -12,14 +12,9 @@ class Minilang
   ACTIONS = %w(PUSH ADD SUB MULT DIV MOD POP PRINT)
 
   def initialize(str)
-    @input = str
-    @commands = split_input
+    @commands = str.split
     @stack = []
     @register = 0
-  end
-
-  def split_input
-    array = @input.split
   end
 
   def eval
@@ -28,35 +23,16 @@ class Minilang
       if command.is_i?
         @register = command.to_i
       else
-        command_list(command)
+        send(command.downcase)
       end
     end
   end
 
+  private
+
   def check_if_valid(command)
     unless command.is_i? || ACTIONS.include?(command)
       raise BadTokenError, "Invalid token: #{command}"
-    end
-  end
-
-  def command_list(command)
-    case command
-    when 'PUSH'
-      push
-    when 'ADD'
-      add
-    when "SUB"
-      sub
-    when "MULT"
-      mult
-    when "DIV"
-      div
-    when "MOD"
-      mod
-    when "POP"
-      pop
-    when "PRINT"
-      print
     end
   end
 
@@ -92,8 +68,6 @@ class Minilang
   def print
     puts @register
   end
-
-
 end
 Minilang.new('5 PUSH 3 MULT PRINT')
 
