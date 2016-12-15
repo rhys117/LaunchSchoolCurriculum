@@ -6,6 +6,14 @@
 
 #MANAGER prefix Mgr and EXE for EXECUTIVE
 
+def example(i)
+  puts yield(i)
+  i += 2
+  puts yield(i)
+end
+
+example(1) { |i| i * 2 }
+
 module Delegate
   def delegate
     true
