@@ -1,0 +1,233 @@
+Object Oriented Progamming Breakdown and Keywords
+* https://gist.github.com/ryansobol/5252653
+# Launch School OOP book
+-- rubylearning.com
+
+Object Oriented Programming (OOP)
+  Programming paradigm
+  ENCAPSULATION and POLYMORPHISM
+    # ENCAPSULATION: is hiding pieces of FUNCTIONALITY and making it unavailable to the rest of the code base. It is a form of data protection, so that data cannot be MANIPULATED or changed without obvious INTENTION. It is what defines the boundaries in your application and allows your code to achieve new levels of complexity. Ruby, like many other OO languages, accomplishes this task by CREATING OBJECTS, and EXPOSING INTERFACES (i.e., METHODS) to interact with those objects.
+    POLYMORPHISM: http://stackoverflow.com/questions/1031273/what-is-polymorphism-what-is-it-for-and-how-is-it-used
+
+  # Concept of OBJECTS
+    contain DATA in form of a FIELD
+      in RUBY this is data ENCAPSULATED by a CLASS * To some it's also the root class in ruby (Object)
+        each OBJECT is an INSTANCE created by INSTANTIATION of it's CLASS (we INSTANTIATED an OBJECT called sparky from the CLASS gooddog) - object returned by calling CLASS METHOD #new
+          ATTRIBUTES (STATES) and BEHAVIOURS of objects DEFINED in classes
+
+        What is an object?
+      * An instance of a class.
+        To some it's also the root class in ruby (Object).
+        Classes themselves descend from Object root class.
+
+      # CLASSES
+      when DEFINING a class, typically focus on STATES AND BEHAVIOURS.
+        STATES track ATTRIBUTES for each object.
+          Think VARRIABLES
+        BEHAVIOURS define what the object is capable of doing.
+          Think METHODS
+
+        GOOGLE - What are CONTAINER CLASSES?
+          In computer science, a container is a class, a data structure, or an abstract data type (ADT) whose instances are collections of other objects. In other words, they store objects in an organized way that follows specific access rules. The size of the container depends on the number of objects (elements) it contains.
+
+      # a CONSTRUCTOR is a subroutine (METHOD) that prepares the new object for use.
+        In Ruby's case the INITIALIZE method (initialize is invoked during performing the #new method)
+
+        # Creating a new OBJECT and INSTANTIATE it with some STATE, like a name.
+        class GoodDog
+          def initialize(name)
+            @name = name
+          end
+        end
+
+        sparky = GoodDog.new('sparky')
+
+        * What is a class?
+        Classes are a blue-print for constructing computer models for real or virtual objects.
+        Classes hold data, have methods that interact with that data and are used to instantiate objects.
+
+        class WhatAreClasses
+          def initialize
+            @data = "I'm instance data of this object. Hello."
+          end
+
+          def method
+            puts @data.gsub("instance", "altered")
+          end
+        end
+
+        object = WhatAreClasses.new
+        object.method #=> I'm altered data of this object. Hello.
+
+      ACCESS CONTROL
+      # A PUBLIC METHOD is a method that is AVAILBLE TO ANYONE who knows EITHER the CLASS NAME OR OBJECTS NAME. They COMPRISE of the CLASSES INTERFACE.
+        Thats how other classes and objects will interact with this class and its objects
+
+      A PRIVATE METHOD works IN the CLASS but are UNAVAILBLE to the rest of the program. Private methods are defined by using the KEYWORD PRIVATE in our program. ANYTHING UNDER private will be IS PRIVATE. UNLESS ANOTHER KEYWORD is used to NEGATE IT.
+
+      * All methods, no matter the access control can be accessed WITHIN the class. But what about outside callers?
+      Public methods enforce no access control - they can be called on any scope.
+      Protected methods are only accessible to other objects of the SAME class.
+      Private methods are only accessible within the context of the current object.
+
+      class AccessLevel
+        def something_interesting
+          another = AccessLevel.new
+          another.public_method
+          another.protected_method
+          another.private_method
+        end
+
+        def public_method
+          puts "Public method. Nice to meet you."
+        end
+
+        protected
+
+        def protected_method
+          puts "Protected method. Sweet!"
+        end
+
+        private
+
+        def private_method
+          puts "Incoming exception!"
+        end
+      end
+
+      AccessLevel.new.something_interesting
+      #=> Public method. Nice to meet you.
+      #=> Protected method. Sweet!
+      #=> NoMethodError: private method
+
+      SELF
+      * what does self mean?
+      Self always referes to the current object. But this question is more difficult than it seems because Classes are also objects in ruby.
+
+      class WhatIsSelf
+        def test
+          puts "At the instance level, self is #{self}"
+        end
+
+        def self.test
+          puts at the class level, self is #{self}
+        end
+      end
+
+      WhatIsSelf.test
+      #=> At the class level self is WhatIsSelf
+
+      WhatIsSelf.new.test
+      #=> At the instance level, self is #<WhatIsSelf: memory_location e.g 0x28190>
+
+      What this indicates is:
+        At the CLASS level self is the class.
+        At the INSTANCE level self is the instance in context, in this case the instance WhatIsSelf at memory location 0x28190.
+
+
+    # MODULE another way of achieving POLYMORPHISM.
+      A COLLECTION of behaivours that via MIXINS are usable in other CLASSES
+
+    * Modules can serve as a mechanism for namespaces
+    # using Modules for NAMESPACING -
+        Organizing similar classes under a module. The advantage of using MODULES to GROUP RELATED CLASSES -
+          1. Easy to RECONGNIZE RELATED classes in our code.
+          2. REDUCES the likelihood of our CLASSES COLLIDING with OTHER SIMILARLY NAMED CLASSES in our CODEBASE.
+
+    *
+    module ANamespace
+      class AClass
+        def initialize
+          puts "Another object, coming right up!"
+        end
+      end
+    end
+
+    ANamespace::AClass.new #=> Another object, coming right up!
+
+    # we CALL CLASSES in a MODULE by APPENDING the CLASS NAME to the MODULE NAME with TWO COLONS (::)
+
+    The second use case for MODULES is as a CONTAINER for methods, called MODULE METHODS.
+
+    * Also modules provide as a mechanism for multiple inheritance via mix-ins and cannot be instantiated like classes can.
+
+    module AMixIn
+      def who_am_i?
+        puts "An existentialist, that's who"
+      end
+    end
+
+    # String is already the parent class
+    class DeepString < String
+      # extend adds instance methods from AMixIn as CLASS methods
+      extend AMixIn
+      # include add instance methods from AMixIn as INSTANCE methods
+      include AMixIn
+    end
+
+
+    VARIABLES can store INFORMATION
+      using MEMORY POINTERS and built-in DATA TYPES (such as strings, hash tables, arrays)
+
+
+    METHODS also called PROCEDURES
+      take INPUT, generate OUTPUT and manipulate data.
+      INSTANCE METHODS
+
+      * There are three ways of to INVOKE a method in ruby.
+
+      object = Object.new
+      object.method_id
+      object.send(:method_id)
+      object.method(:method_id).call
+
+     METHOD LOOKUP PATH
+     # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
+     First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
+
+    INHERITANCE
+    -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from from a single other class (superclass).
+
+
+
+    RESERVED WORDS
+    Reserved word     Description
+BEGIN             Code, enclosed in { and }, to run before the program runs.
+END               Code, enclosed in { and }, to run when the program ends.
+alias             CREATES an alias for an existing method, operator, or global variable.
+and               LOGICAL operator; same as && except and has lower precedence.
+begin             Begins a code block or group of statements; closes with end.
+break             Terminates a while or until loop or a method inside a block.
+\case             Compares an expression with a matching when clause; closes with end.
+class             Defines a class; closes with end.
+def               Defines a method; closes with end.
+defined?          Determines if a variable, method, super method, or block exists.
+do                Begins a block and executes code in that block; closes with end.
+else              Executes if previous conditional, in if, elsif, unless, or when, is not true.
+elsif             Executes if previous conditional, in if or elsif, is not true.
+end               Ends a code block (group of statements) starting with begin, def, do, if, etc.
+ensure            Always executes at block termination; use after last rescue.
+false             Logical or Boolean false, instance of FalseClass. (See true.)
+for               Begins a for loop; used with in.
+if                Executes code block if true. Closes with end.
+module            Defines a module; closes with end.
+next              Jumps before a loop's conditional.
+nil               Empty, uninitialized variable, or invalid, but not the same as zero; object of NilClass.
+not               Logical operator; same as !.
+or                Logical operator; same as || except or has lower precedence.
+redo              Jumps after a loop's conditional.
+rescue            Evaluates an expression after an exception is raised; used before ensure.
+retry             Repeats a method call outside of rescue; jumps to top of block (begin) if inside rescue.
+return            Returns a value from a method or block. May be omitted.
+self              Current object (invoked by a method).
+super             Calls method of the same name in the superclass. The superclass is the parent of this class.
+then              A continuation for if, unless, and when. May be omitted.
+true              Logical or Boolean true, instance of TrueClass.
+undef             Makes a method in current class undefined.
+unless            Executes code block if conditional statement is false.
+until             Executes code block while conditional statement is false.
+when              Starts a clause (one or more) under case.
+while             Executes code while the conditional statement is true.
+yield             Executes the block passed to the method.
+_ _FILE_ _        Name of current source file.
+_ _LINE_ _     Number of current line in the current source file.
