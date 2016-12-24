@@ -7,7 +7,17 @@ Object Oriented Programming (OOP)
   Programming paradigm
   ENCAPSULATION and POLYMORPHISM
     # ENCAPSULATION: is hiding pieces of FUNCTIONALITY and making it unavailable to the rest of the code base. It is a form of data protection, so that data cannot be MANIPULATED or changed without obvious INTENTION. It is what defines the boundaries in your application and allows your code to achieve new levels of complexity. Ruby, like many other OO languages, accomplishes this task by CREATING OBJECTS, and EXPOSING INTERFACES (i.e., METHODS) to interact with those objects.
-    POLYMORPHISM: http://stackoverflow.com/questions/1031273/what-is-polymorphism-what-is-it-for-and-how-is-it-used
+    POLYMORPHISM:
+    http://stackoverflow.com/questions/1031273/what-is-polymorphism-what-is-it-for-and-how-is-it-used
+    If anybody says CUT to these people
+      The Surgeon
+      The Hair Stylist
+      The Actor
+    What will happen?
+      The Surgeon would begin to make an incision.
+      The Hair Stylist would begin to cut someone's hair.
+      The Actor would abruptly stop acting out of the current scene, awaiting directorial guidance.
+    So above representation shows What is polymorphism (same name, different behavior) in OOP.
 
   # Concept of OBJECTS
     contain DATA in form of a FIELD
@@ -24,14 +34,19 @@ Object Oriented Programming (OOP)
       when DEFINING a class, typically focus on STATES AND BEHAVIOURS.
         STATES track ATTRIBUTES for each object.
           Think VARRIABLES
+          DIFFERENT INFORMATION for each instance is tracked by INSTANCE VARIABLES and are how objects KEEP TRACK OF THEIR STATES.
+            INSTANCE VARIABLES are SCOPED at the OBJECT.
         BEHAVIOURS define what the object is capable of doing.
           Think METHODS
+          Every INSTANCE (object) of a CLASS contain INDENTICAL BEHAVIOURS defined by INSTANCE METHODS.
+            Instance methods are availble to objects (instances) of that class.
 
         GOOGLE - What are CONTAINER CLASSES?
           In computer science, a container is a class, a data structure, or an abstract data type (ADT) whose instances are collections of other objects. In other words, they store objects in an organized way that follows specific access rules. The size of the container depends on the number of objects (elements) it contains.
 
       # a CONSTRUCTOR is a subroutine (METHOD) that prepares the new object for use.
         In Ruby's case the INITIALIZE method (initialize is invoked during performing the #new method)
+          (ruby-doc.org) #new calls allocate to create a new object of the class's class, then invokes that objects initialize method passing in args.
 
         # Creating a new OBJECT and INSTANTIATE it with some STATE, like a name.
         class GoodDog
@@ -100,30 +115,12 @@ Object Oriented Programming (OOP)
       #=> Protected method. Sweet!
       #=> NoMethodError: private method
 
-      SELF
-      * what does self mean?
-      Self always referes to the current object. But this question is more difficult than it seems because Classes are also objects in ruby.
+    INHERITANCE
+    -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from a single other class (superclass).
 
-      class WhatIsSelf
-        def test
-          puts "At the instance level, self is #{self}"
-        end
+    Thus INHERITANCE allows you to create a class that is a REFINEMENT or SPECIALIZATION of ANOTHER CLASS.
 
-        def self.test
-          puts at the class level, self is #{self}
-        end
-      end
-
-      WhatIsSelf.test
-      #=> At the class level self is WhatIsSelf
-
-      WhatIsSelf.new.test
-      #=> At the instance level, self is #<WhatIsSelf: memory_location e.g 0x28190>
-
-      What this indicates is:
-        At the CLASS level self is the class.
-        At the INSTANCE level self is the instance in context, in this case the instance WhatIsSelf at memory location 0x28190.
-
+    INHERITANCE is indicated by <
 
     # MODULE another way of achieving POLYMORPHISM.
       A COLLECTION of behaivours that via MIXINS are usable in other CLASSES
@@ -149,7 +146,7 @@ Object Oriented Programming (OOP)
 
     The second use case for MODULES is as a CONTAINER for methods, called MODULE METHODS.
 
-    * Also modules provide as a mechanism for multiple inheritance via mix-ins and cannot be instantiated like classes can.
+    * Also MODULES provide as a MECHANISM for MULTIPLE INHERITANCE via MIX-INS and CANNOT BE INSANTIATED like classes can.
 
     module AMixIn
       def who_am_i?
@@ -165,69 +162,108 @@ Object Oriented Programming (OOP)
       include AMixIn
     end
 
+    METHOD LOOKUP PATH
+     # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
+     First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
+
+    SELF
+    * what does self mean?
+    Self always referes to the current object. But this question is more difficult than it seems because Classes are also objects in ruby.
+
+    class WhatIsSelf
+      def test
+        puts "At the instance level, self is #{self}"
+      end
+
+      def self.test
+        puts at the class level, self is #{self}
+      end
+    end
+
+    WhatIsSelf.test
+    #=> At the class level self is WhatIsSelf
+
+    WhatIsSelf.new.test
+    #=> At the instance level, self is #<WhatIsSelf: memory_location e.g 0x28190>
+
+    What this indicates is:
+      At the CLASS level self is the class.
+      At the INSTANCE level self is the instance in context, in this case the instance WhatIsSelf at memory location 0x28190.
 
     VARIABLES can store INFORMATION
       using MEMORY POINTERS and built-in DATA TYPES (such as strings, hash tables, arrays)
 
+    # INSTANCE VARIABLES
+      Exists as long as the objects instance exists and is one of the ways we tie data to it.
+      INSTANCE VARIABLES are RESPONSIBLE for KEEPING track of data about the STATE of an OBJECT.
+      @ symbol in front of it. (@im_an_instance_variable)
 
     METHODS also called PROCEDURES
       take INPUT, generate OUTPUT and manipulate data.
       INSTANCE METHODS
+        All instances of a class have the same BEHAVIOURS (Methods), though they might contain different states.
+        We can EXPOSE INFORMATION about the STATE of the OBJECT using INSTANCE METHODS.
 
       * There are three ways of to INVOKE a method in ruby.
-
       object = Object.new
       object.method_id
       object.send(:method_id)
       object.method(:method_id).call
 
-     METHOD LOOKUP PATH
-     # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
-     First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
+    # ACCESSOR METHODS
+    All the accessor methods take a symbol as parameters.
 
-    INHERITANCE
-    -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from from a single other class (superclass).
+    GETTER - return value of instance variable :attr_reader
+      def instance_var
+        @instance_var
+      end
+
+    SETTER - set value of instance variable :attr_writer
+      def instance_var=(value)
+        @instance_var = value
+      end
+
+    BOTH - :attr_accessor
 
 
-
-    RESERVED WORDS
+RESERVED WORDS
     Reserved word     Description
-BEGIN             Code, enclosed in { and }, to run before the program runs.
-END               Code, enclosed in { and }, to run when the program ends.
-alias             CREATES an alias for an existing method, operator, or global variable.
-and               LOGICAL operator; same as && except and has lower precedence.
-begin             Begins a code block or group of statements; closes with end.
-break             Terminates a while or until loop or a method inside a block.
-\case             Compares an expression with a matching when clause; closes with end.
-class             Defines a class; closes with end.
-def               Defines a method; closes with end.
-defined?          Determines if a variable, method, super method, or block exists.
-do                Begins a block and executes code in that block; closes with end.
-else              Executes if previous conditional, in if, elsif, unless, or when, is not true.
-elsif             Executes if previous conditional, in if or elsif, is not true.
-end               Ends a code block (group of statements) starting with begin, def, do, if, etc.
-ensure            Always executes at block termination; use after last rescue.
-false             Logical or Boolean false, instance of FalseClass. (See true.)
-for               Begins a for loop; used with in.
-if                Executes code block if true. Closes with end.
-module            Defines a module; closes with end.
-next              Jumps before a loop's conditional.
-nil               Empty, uninitialized variable, or invalid, but not the same as zero; object of NilClass.
-not               Logical operator; same as !.
-or                Logical operator; same as || except or has lower precedence.
-redo              Jumps after a loop's conditional.
-rescue            Evaluates an expression after an exception is raised; used before ensure.
-retry             Repeats a method call outside of rescue; jumps to top of block (begin) if inside rescue.
-return            Returns a value from a method or block. May be omitted.
-self              Current object (invoked by a method).
-super             Calls method of the same name in the superclass. The superclass is the parent of this class.
-then              A continuation for if, unless, and when. May be omitted.
-true              Logical or Boolean true, instance of TrueClass.
-undef             Makes a method in current class undefined.
-unless            Executes code block if conditional statement is false.
-until             Executes code block while conditional statement is false.
-when              Starts a clause (one or more) under case.
-while             Executes code while the conditional statement is true.
-yield             Executes the block passed to the method.
-_ _FILE_ _        Name of current source file.
-_ _LINE_ _     Number of current line in the current source file.
+  BEGIN             Code, enclosed in { and }, to run before the program runs.
+  END               Code, enclosed in { and }, to run when the program ends.
+  alias             CREATES an alias for an existing method, operator, or global variable.
+  and               LOGICAL operator; same as && except and has lower precedence.
+  begin             Begins a code block or group of statements; closes with end.
+  break             Terminates a while or until loop or a method inside a block.
+  \case             Compares an expression with a matching when clause; closes with end.
+  class             Defines a class; closes with end.
+  def               Defines a method; closes with end.
+  defined?          Determines if a variable, method, super method, or block exists.
+  do                Begins a block and executes code in that block; closes with end.
+  else              Executes if previous conditional, in if, elsif, unless, or when, is not true.
+  elsif             Executes if previous conditional, in if or elsif, is not true.
+  end               Ends a code block (group of statements) starting with begin, def, do, if, etc.
+  ensure            Always executes at block termination; use after last rescue.
+  false             Logical or Boolean false, instance of FalseClass. (See true.)
+  for               Begins a for loop; used with in.
+  if                Executes code block if true. Closes with end.
+  module            Defines a module; closes with end.
+  next              Jumps before a loop's conditional.
+  nil               Empty, uninitialized variable, or invalid, but not the same as zero; object of NilClass.
+  not               Logical operator; same as !.
+  or                Logical operator; same as || except or has lower precedence.
+  redo              Jumps after a loop's conditional.
+  rescue            Evaluates an expression after an exception is raised; used before ensure.
+  retry             Repeats a method call outside of rescue; jumps to top of block (begin) if inside rescue.
+  return            Returns a value from a method or block. May be omitted.
+  self              Current object (invoked by a method).
+  super             Calls method of the same name in the superclass. The superclass is the parent of this class.
+  then              A continuation for if, unless, and when. May be omitted.
+  true              Logical or Boolean true, instance of TrueClass.
+  undef             Makes a method in current class undefined.
+  unless            Executes code block if conditional statement is false.
+  until             Executes code block while conditional statement is false.
+  when              Starts a clause (one or more) under case.
+  while             Executes code while the conditional statement is true.
+  yield             Executes the block passed to the method.
+  _ _FILE_ _        Name of current source file.
+  _ _LINE_ _     Number of current line in the current source file.
