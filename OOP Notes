@@ -3,10 +3,19 @@ Object Oriented Progamming Breakdown and Keywords
 # Launch School OOP book
 -- rubylearning.com
 
+USEFUL
+http://web.programminghub.io/#/interviewquestions/Ruby
+
+
+
 Object Oriented Programming (OOP)
   Programming paradigm
+
+  WHY OOP?
+  # Programmers needed a way to create containers for data that could be changed and manipulated without affecting the whole program. They needed a a way to SECTION OFF AREAS OF CODE that perorm certain procedures so that their programs could become THE INTERACTION OF SMALL PARTS, as opposed to one massive blob of dependancy.
+
   ENCAPSULATION and POLYMORPHISM
-    # ENCAPSULATION: is hiding pieces of FUNCTIONALITY and making it unavailable to the rest of the code base. It is a form of data protection, so that data cannot be MANIPULATED or changed without obvious INTENTION. It is what defines the boundaries in your application and allows your code to achieve new levels of complexity. Ruby, like many other OO languages, accomplishes this task by CREATING OBJECTS, and EXPOSING INTERFACES (i.e., METHODS) to interact with those objects.
+    # ENCAPSULATION: is hiding pieces of FUNCTIONALITY and making it unavailable to the rest of the code base. It is a form of data protection, so that DATA CANNOT be MANIPULATED or changed without obvious INTENTION. It is what defines the boundaries in your application and allows your code to achieve new levels of complexity. Ruby, like many other OO languages, accomplishes this task by CREATING OBJECTS, and EXPOSING INTERFACES (i.e., METHODS) to interact with those objects.
     POLYMORPHISM:
     http://stackoverflow.com/questions/1031273/what-is-polymorphism-what-is-it-for-and-how-is-it-used
     If anybody says CUT to these people
@@ -19,62 +28,155 @@ Object Oriented Programming (OOP)
       The Actor would abruptly stop acting out of the current scene, awaiting directorial guidance.
     So above representation shows What is polymorphism (same name, different behavior) in OOP.
 
+    # Polymorphism can be achieved by subclasses and modules (module `methods).
+
+
+  VARIABLES can store INFORMATION
+    using MEMORY POINTERS and built-in DATA TYPES (such as strings, hash tables, arrays)
+
+    (https://www.tutorialspoint.com/ruby/ruby_classes.htm)
+    RUBY PROVIDES FOUR TYPES OF VARIABLES
+      LOCAL VARIABLES - Local variables are the variables that are defined in a method. Local variables are not availble outside the method
+
+      INSTANCE VARIABLES - Instance variables are availble across methods for any particular instance or object. This means that instance variables change from object to object. Instance variables are preceded by the sign (@)
+      # Exist as long as the objects instance exists and is one of the ways we tie data to it. Instance variables are responsible for keeping track of data about the state of an object.
+
+      CLASS VARIABLES - Class variables are available across different objects. A class variables belongs to the calss and is a characteristic of a class. They are preceded by the sign (@@)
+
+      GLOBAL VARIABLES - Class variables are not available across classes. If you want to have a single variable, which is available across classes, you need to define a global variable. The global varaibles are always preceded by the dollar sign ($)
+
+      CONSTANTS - Begin with a capital (although Ruby convention is all-caps snakecase) defined within a class or module can be accessed from within that class or module and those defined outside a class or module can be accesed glovally. Making an assignment to a constant that is aready initialized procudes a warning.
+      # A variable that will never change for any reason.
+
+    METHODS also called PROCEDURES
+      take INPUT, generate OUTPUT and manipulate data.
+
+      * There are three ways of to INVOKE a method in ruby.
+      object = Object.new
+      object.method_id
+      object.send(:method_id)
+      object.method(:method_id).call
+
+      #
+      INSTANCE METHODS
+        All instances of a class have the same BEHAVIOURS (Methods), though they might contain different states.
+        We can EXPOSE INFORMATION about the STATE of the OBJECT using INSTANCE METHODS.
+
+      CLASS METHODS
+        METHODS that can be called DIRECTLY ON THE CLASS itself WITHOUT INSTANTIATING ANY OBJECTS. These methods are SCOPED to the CLASS.
+        WHERE we put FUNCTIONALITY that does NOT PERTAIN to INDIVIDUAL OBJECTS
+        Defined by prepending self. to the method name
+
+      USING CLASS METHODS/CLASS VARIABLES EXAMPLE
+
+        class AClass
+          @@counter = 0
+
+          def initialize
+            @@counter += 1
+          end
+
+          def self.total_count
+            @@counter
+          end
+        end
+
+      OVERRIDING METHODS
+        -- Method overriding, in OOP is a language feature that allows a subclass to provide a specific implementation of a method that is already provided by one of its superclasses. The implementation in the subclass overrides (replaces) them implementation in the superclass.
+
+        # The to_s method
+        Comes built in to every class in Ruby.
+          #puts method automatically calls to_s on its argument
+          also called automatically in string interpolation
+          The default to_s method prints the objects class and the encodeing of the object id.
+            Which is why overriding this method makes sense and is commonplace
+
+            class AClass
+              def initialize
+                @variable = 'hello!'
+              end
+
+              def to_s
+                "We've overritten the to_s method, #{@variable}"
+              end
+            end
+
+
+
   # Concept of OBJECTS
-    contain DATA in form of a FIELD
+    What is an object?
+    * An instance of a class.
+      To some it's also the root class in ruby (Object).
+      Classes themselves descend from Object root class.
+
+    OBJECTS contain DATA in form of a FIELD/S
       in RUBY this is data ENCAPSULATED by a CLASS * To some it's also the root class in ruby (Object)
-        each OBJECT is an INSTANCE created by INSTANTIATION of it's CLASS (we INSTANTIATED an OBJECT called sparky from the CLASS gooddog) - object returned by calling CLASS METHOD #new
-          ATTRIBUTES (STATES) and BEHAVIOURS of objects DEFINED in classes
+        ATTRIBUTES (STATES) and BEHAVIOURS of objects DEFINED in classes
 
-        What is an object?
-      * An instance of a class.
-        To some it's also the root class in ruby (Object).
-        Classes themselves descend from Object root class.
+        each OBJECT is an INSTANCE created by INSTANTIATION of it's CLASS (we INSTANTIATED an OBJECT called sparky from the CLASS gooddog)
+        The object is returned by calling the CLASS METHOD #new
 
-      # CLASSES
-      when DEFINING a class, typically focus on STATES AND BEHAVIOURS.
-        STATES track ATTRIBUTES for each object.
-          Think VARRIABLES
-          DIFFERENT INFORMATION for each instance is tracked by INSTANCE VARIABLES and are how objects KEEP TRACK OF THEIR STATES.
-            INSTANCE VARIABLES are SCOPED at the OBJECT.
-        BEHAVIOURS define what the object is capable of doing.
-          Think METHODS
-          Every INSTANCE (object) of a CLASS contain INDENTICAL BEHAVIOURS defined by INSTANCE METHODS.
-            Instance methods are availble to objects (instances) of that class.
+      Is everything in ruby an object?
+        (http://web.programminghub.io/#/interviewquestions/Ruby)
+          Methods are not objects. Blocks are not objects. Keywords are not objects. However, there exist Method objects and Proc objects, and some keywords refer to objects.
+            To understand Method objects - http://stackoverflow.com/questions/2602340/methods-in-ruby-objects-or-not
+                                           http://ruby-doc.org/core-2.2.0/Method.html
+        (http://rubylearning.com/blog/2010/09/27/almost-everything-is-an-object-and-everything-is-almost-an-object/)
+          It's almost true, but not quite. Not everything in ruby is an object BUT there's a corollary to this point EVERYTHING DOES EVALUATE TO AN OBJECT.
+        # OOP BOOK
+        Everything in ruby is an object.
 
-        GOOGLE - What are CONTAINER CLASSES?
-          In computer science, a container is a class, a data structure, or an abstract data type (ADT) whose instances are collections of other objects. In other words, they store objects in an organized way that follows specific access rules. The size of the container depends on the number of objects (elements) it contains.
+    # CLASSES
+      * What is a class?
+      Classes are a blue-print for constructing computer models for real or virtual objects.
+      Classes hold data, have methods that interact with that data and are used to instantiate objects.
+
+    # CLASSES DEFINE OBJECTS, they define an objects STATES AND BEHAVIOURS.
+      STATES track ATTRIBUTES for each object.
+        Think VARRIABLES
+        DIFFERENT INFORMATION for each instance is tracked by INSTANCE VARIABLES and are how objects KEEP TRACK OF THEIR STATES.
+          INSTANCE VARIABLES are SCOPED at the OBJECT.
+      BEHAVIOURS define what the object is capable of doing.
+        Think METHODS
+        Every INSTANCE (object) of a CLASS contain INDENTICAL BEHAVIOURS defined by INSTANCE METHODS.
+          Instance methods are availble to objects (instances) of that class.
+
+      INSTANTIATION is the process of creating a NEW OBJECT (instance) from a CLASS.
+
+      # Creating a new OBJECT and INSTANTIATE it with some STATE, like a name.
+      class GoodDog
+        def initialize(name)
+          @name = name
+        end
+      end
+
+      sparky = GoodDog.new('sparky')
+
+
+      *
+      class WhatAreClasses
+        def initialize
+          @data = "I'm instance data of this object. Hello."
+        end
+
+        def method
+          puts @data.gsub("instance", "altered")
+        end
+      end
+
+      object = WhatAreClasses.new
+      object.method #=> I'm altered data of this object. Hello.
+
+
+      GOOGLE - What are CONTAINER CLASSES?
+        In computer science, a container is a class, a data structure, or an abstract data type (ADT) whose instances are collections of other objects. In other words, they store objects in an organized way that follows specific access rules. The size of the container depends on the number of objects (elements) it contains.
 
       # a CONSTRUCTOR is a subroutine (METHOD) that prepares the new object for use.
         In Ruby's case the INITIALIZE method (initialize is invoked during performing the #new method)
-          (ruby-doc.org) #new calls allocate to create a new object of the class's class, then invokes that objects initialize method passing in args.
+          (ruby-doc.org) #new calls #allocate to create a new object of the class's class, then invokes that objects #initialize method passing in args.
 
-        # Creating a new OBJECT and INSTANTIATE it with some STATE, like a name.
-        class GoodDog
-          def initialize(name)
-            @name = name
-          end
-        end
 
-        sparky = GoodDog.new('sparky')
-
-        * What is a class?
-        Classes are a blue-print for constructing computer models for real or virtual objects.
-        Classes hold data, have methods that interact with that data and are used to instantiate objects.
-
-        class WhatAreClasses
-          def initialize
-            @data = "I'm instance data of this object. Hello."
-          end
-
-          def method
-            puts @data.gsub("instance", "altered")
-          end
-        end
-
-        object = WhatAreClasses.new
-        object.method #=> I'm altered data of this object. Hello.
-
-      ACCESS CONTROL
+    ACCESS CONTROL
       # A PUBLIC METHOD is a method that is AVAILBLE TO ANYONE who knows EITHER the CLASS NAME OR OBJECTS NAME. They COMPRISE of the CLASSES INTERFACE.
         Thats how other classes and objects will interact with this class and its objects
 
@@ -115,6 +217,7 @@ Object Oriented Programming (OOP)
       #=> Protected method. Sweet!
       #=> NoMethodError: private method
 
+
     INHERITANCE
     -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from a single other class (superclass).
 
@@ -122,6 +225,8 @@ Object Oriented Programming (OOP)
 
     INHERITANCE is indicated by <
 
+
+    MODULES
     # MODULE another way of achieving POLYMORPHISM.
       A COLLECTION of behaivours that via MIXINS are usable in other CLASSES
 
@@ -146,7 +251,7 @@ Object Oriented Programming (OOP)
 
     The second use case for MODULES is as a CONTAINER for methods, called MODULE METHODS.
 
-    * Also MODULES provide as a MECHANISM for MULTIPLE INHERITANCE via MIX-INS and CANNOT BE INSANTIATED like classes can.
+    * Also MODULES provide a MECHANISM for MULTIPLE INHERITANCE via MIX-INS. They CANNOT BE INSTANTIATED like classes can.
 
     module AMixIn
       def who_am_i?
@@ -166,64 +271,99 @@ Object Oriented Programming (OOP)
      # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
      First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
 
-    SELF
-    * what does self mean?
-    Self always referes to the current object. But this question is more difficult than it seems because Classes are also objects in ruby.
-
-    class WhatIsSelf
-      def test
-        puts "At the instance level, self is #{self}"
-      end
-
-      def self.test
-        puts at the class level, self is #{self}
-      end
-    end
-
-    WhatIsSelf.test
-    #=> At the class level self is WhatIsSelf
-
-    WhatIsSelf.new.test
-    #=> At the instance level, self is #<WhatIsSelf: memory_location e.g 0x28190>
-
-    What this indicates is:
-      At the CLASS level self is the class.
-      At the INSTANCE level self is the instance in context, in this case the instance WhatIsSelf at memory location 0x28190.
-
-    VARIABLES can store INFORMATION
-      using MEMORY POINTERS and built-in DATA TYPES (such as strings, hash tables, arrays)
-
-    # INSTANCE VARIABLES
-      Exists as long as the objects instance exists and is one of the ways we tie data to it.
-      INSTANCE VARIABLES are RESPONSIBLE for KEEPING track of data about the STATE of an OBJECT.
-      @ symbol in front of it. (@im_an_instance_variable)
-
-    METHODS also called PROCEDURES
-      take INPUT, generate OUTPUT and manipulate data.
-      INSTANCE METHODS
-        All instances of a class have the same BEHAVIOURS (Methods), though they might contain different states.
-        We can EXPOSE INFORMATION about the STATE of the OBJECT using INSTANCE METHODS.
-
-      * There are three ways of to INVOKE a method in ruby.
-      object = Object.new
-      object.method_id
-      object.send(:method_id)
-      object.method(:method_id).call
 
     # ACCESSOR METHODS
-    All the accessor methods take a symbol as parameters.
+    As a convention, getter and setter methods should use the same name as the instance variable they are exposing and setting.
+    GETTER and SETTER methods are way to EXPOSE and CHANGE an OBJECTS STATE.
+      Can be used from WITHIN the class.
 
-    GETTER - return value of instance variable :attr_reader
+      Ruby has built-in way to automatically create getter and setter methods.
+      All the attr_* methods take a symbol as parameters.
+      GETTER - return value of instance variable :attr_reader
+        def instance_var
+          @instance_var
+        end
+
+      SETTER - set value of instance variable :attr_writer
+        def instance_var=(value)
+          @instance_var = value
+        end
+
+      BOTH - :attr_accessor
+
+    These methods save us a great deal of code for example
+      attr_accessor :name, :height, :weight
+    This one line of code gives us six getter/setter instance methods: name, name=, height, height=, weight, weight= It also gives us three instance variables: @name, @height, @weight
+    NOTE:
+      (http://stackoverflow.com/questions/15514378/does-rubys-attr-accessor-automatically-create-instance-variables-for-attributes)
+      All attr_* methods DO NOT actually initialize the instance variable (this disagrees with the OOP book above but can be proven as below)
+        class Test
+          attr_accessor :variable
+        end
+
+        example = Test.new
+        example.instance_variables # => []
+
+      HOWEVER invoking the setter method does cause the variable to become defined.
+
+    It's a good idea to call these methods instead of the variables themselves, for example
+      attr_accessor :variable
+
+      def aInstanceMethod
+        "#{variable}" # <- GOOD
+        "#{@variable}" # <- BAD
+      end
+
+    Why is this useful?
+      If DO NOT want to EXPOSE RAW DATA. If you only wanted to expose the last four digits of an instance variable with our own getter method, for example
+
+      @instance_var = '123-45-6789'
+
       def instance_var
-        @instance_var
+        # converts '123-45-6789' to 'xxx-xx-6789'
+        'xxx-xx-' + @instance_var.split('-').last
       end
 
-    SETTER - set value of instance variable :attr_writer
-      def instance_var=(value)
-        @instance_var = value
+      Also follows Don't Repeat Yourself, and makes bug fixing easier (only have to check one place)
+
+      When REPLACING accessing the INSTANCE VARIABLE directly with SETTER METHODS we have to DISAMBIGUATE from creating a LOCAL VARIABLE and call the SETTER METHODS WITH SELF
+
+        def change_variable(new_value)
+          name = new_value # creates a local variable in the scope of the change_variable method called name and assigns it to the arg new_value
+          self.name = new_value # calls the setter method on the instance variable name and assigns it to the arg new_value
+        end
+
+      To be consistent we could also adopt this syntax for getter methods but it is not required.
+
+    SELF
+    What does self mean?
+      *
+      Self always referes to the current object. But this question is more difficult than it seems because Classes are also objects in ruby.
+
+      class WhatIsSelf
+        def test
+          puts "At the instance level, self is #{self}"
+        end
+
+        def self.test
+          puts at the class level, self is #{self}
+        end
       end
 
-    BOTH - :attr_accessor
+      WhatIsSelf.test
+      #=> At the class level self is WhatIsSelf
+
+      WhatIsSelf.new.test
+      #=> At the instance level, self is #<WhatIsSelf: memory_location e.g 0x28190>
+
+      What this indicates is:
+        At the CLASS level self is the class.
+        At the INSTANCE level self is the instance in context, in this case the instance WhatIsSelf at memory location 0x28190.
+
+      # self changes depending on the scope it's defined in
+      self inside an instance method references the instance (object) that called the method
+      self outside of an instance method references the class and can be used to define class methods
+
 
 
 RESERVED WORDS
