@@ -5,6 +5,8 @@ Object Oriented Progamming Breakdown and Keywords
 
 USEFUL
 http://web.programminghub.io/#/interviewquestions/Ruby
+https://www.leighhalliday.com/object-hierarchy-in-ruby
+http://practicingruby.com/articles/method-lookup-1
 
 
 
@@ -35,7 +37,7 @@ Object Oriented Programming (OOP)
     using MEMORY POINTERS and built-in DATA TYPES (such as strings, hash tables, arrays)
 
     (https://www.tutorialspoint.com/ruby/ruby_classes.htm)
-    RUBY PROVIDES FOUR TYPES OF VARIABLES
+    RUBY PROVIDES DIFFERENT TYPES OF VARIABLES
       LOCAL VARIABLES - Local variables are the variables that are defined in a method. Local variables are not availble outside the method
 
       INSTANCE VARIABLES - Instance variables are availble across methods for any particular instance or object. This means that instance variables change from object to object. Instance variables are preceded by the sign (@)
@@ -45,6 +47,7 @@ Object Oriented Programming (OOP)
 
       GLOBAL VARIABLES - Class variables are not available across classes. If you want to have a single variable, which is available across classes, you need to define a global variable. The global varaibles are always preceded by the dollar sign ($)
 
+      and
       CONSTANTS - Begin with a capital (although Ruby convention is all-caps snakecase) defined within a class or module can be accessed from within that class or module and those defined outside a class or module can be accesed glovally. Making an assignment to a constant that is aready initialized procudes a warning.
       # A variable that will never change for any reason.
 
@@ -101,6 +104,10 @@ Object Oriented Programming (OOP)
               end
             end
 
+      ACCIDENTAL METHOD OVERRIDING
+        Remember that every class you create INHERENTLY SUBCLASSES FROM CLASS OBJECT
+          which has a lot of important methods
+        Accidentally overrding a method could have FAR-REACHING EFFECTS on your code.
 
 
   # Concept of OBJECTS
@@ -173,7 +180,123 @@ Object Oriented Programming (OOP)
 
       # a CONSTRUCTOR is a subroutine (METHOD) that prepares the new object for use.
         In Ruby's case the INITIALIZE method (initialize is invoked during performing the #new method)
-          (ruby-doc.org) #new calls #allocate to create a new object of the class's class, then invokes that objects #initialize method passing in args.
+          (ruby-doc.org) #new calls #allocate to create a new object of the class's class, then invokes that objects #initialize method passing in args
+
+
+    INHERITANCE (CLASS INHERITANCE)
+    -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from a single other class (superclass), HOWEVER that class can inherit from another class and so on and so forth.
+
+    Thus INHERITANCE allows you to create a class that is a REFINEMENT or SPECIALIZATION of ANOTHER CLASS.
+
+    INHERITANCE is indicated by <
+
+      class HigherInHierachy
+        def inherited_method
+          "I've been inherited!"
+        end
+      end
+
+      class LowerInHierachy < HigherInHierachy
+        #
+      end
+
+      puts LowerInHierachy.new.inherited_method # => "I've been inherited!"
+
+    # This means all the methods in the Superclass are availble to the Subclass.
+    We can override methods by defining them in the Subclass.
+
+    Inheritance can be a great way to remove duplication in your code base. It also follows the DRY(do not repeat yourself) theory.
+      Which means potentially extracting logic to one place that can be reused
+
+    SUPER
+      A built-in function that will SEARCH the INHERITANCE HIERARCHY for a METHOD OF THE SAME NAME and then INVOKE THAT METHOD.
+        If we use SUPER THAT TAKES NO ARGS but the SUPERCLASS METHOD REQUIRES args super AUTOMATICALLY FORWARDS the ARGUEMENTS that were passed to the method (example 1)
+          When called with specified arguments the specified args will be sent up the method lookup chain (example 2)
+
+      # example 1
+      class ASuperclass
+        def initialize(first_variable)
+          @first_var = first_variable
+        end
+      end
+
+      class ASubclass < ASuperclass
+        def initialize(second_variable)
+          super
+          @second_var = second_variable
+        end
+      end
+
+      example = ASubclass.new('test_var') # => #<ASubclass:0x007fd3d4058750 @first_var=\"test_var\", @second_var=\"test_var\">
+
+      # example 2
+      class ASuperclass
+        def initialize(first_variable)
+          @first_var = first_variable
+        end
+      end
+
+      class ASubclass < ASuperclass
+        def initialize(first_variable, second_variable)
+          super(first_variable)
+          @second_var = second_variable
+        end
+      end
+
+      example = ASubclass.new('first', 'second') # => #<ASubclass:0x007fd3d4058750 @first_var=\"first\", @second_var=\"second\">
+
+
+    MODULE METHODS
+    # MODULE another way of achieving POLYMORPHISM.
+    USING MODULES as a CONTAINER for METHODS
+      A COLLECTION of behaivours that via MIXINS are usable in other CLASSES
+      Using MODULES to GROUP COMMON BEHAVIOURS allows us to practice DRY (do not repeat) design and gives a FLEXIBLE design
+      COMMON CONVENTION
+        'able' behaviour use module methods (swimmable, climable)
+        is-a relationship - CLASS INHERITANCE
+        has-a relationship - MODULE METHODS
+      You can MIXIN AS MANY MODULES as you like.
+
+    * MODULES provide a MECHANISM for MULTIPLE INHERITANCE via MIX-INS. They CANNOT BE INSTANTIATED like classes can.
+
+    module AMixIn
+      def who_am_i?
+        puts "An existentialist, that's who"
+      end
+    end
+
+    # String is already the parent class
+    class DeepString < String
+      # extend adds instance methods from AMixIn as CLASS methods
+      extend AMixIn
+      # include adds instance methods from AMixIn as INSTANCE methods
+      include AMixIn
+    end
+
+    MODULE NAMESPACES
+    * Modules can serve as a mechanism for namespaces
+    # using Modules for NAMESPACING -
+        Organizing similar classes under a module. The advantage of using MODULES to GROUP RELATED CLASSES -
+          1. Easy to RECONGNIZE RELATED classes in our code.
+          2. REDUCES the likelihood of our CLASSES COLLIDING with OTHER SIMILARLY NAMED CLASSES in our CODEBASE.
+
+    *
+    module ANamespace
+      class AClass
+        def initialize
+          puts "Another object, coming right up!"
+        end
+      end
+    end
+
+    ANamespace::AClass.new #=> Another object, coming right up!
+
+    # we CALL CLASSES in a MODULE by APPENDING the CLASS NAME to the MODULE NAME with TWO COLONS (::)
+
+
+    METHOD LOOKUP PATH
+     # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
+     First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
 
 
     ACCESS CONTROL
@@ -216,60 +339,6 @@ Object Oriented Programming (OOP)
       #=> Public method. Nice to meet you.
       #=> Protected method. Sweet!
       #=> NoMethodError: private method
-
-
-    INHERITANCE
-    -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from a single other class (superclass).
-
-    Thus INHERITANCE allows you to create a class that is a REFINEMENT or SPECIALIZATION of ANOTHER CLASS.
-
-    INHERITANCE is indicated by <
-
-
-    MODULES
-    # MODULE another way of achieving POLYMORPHISM.
-      A COLLECTION of behaivours that via MIXINS are usable in other CLASSES
-
-    * Modules can serve as a mechanism for namespaces
-    # using Modules for NAMESPACING -
-        Organizing similar classes under a module. The advantage of using MODULES to GROUP RELATED CLASSES -
-          1. Easy to RECONGNIZE RELATED classes in our code.
-          2. REDUCES the likelihood of our CLASSES COLLIDING with OTHER SIMILARLY NAMED CLASSES in our CODEBASE.
-
-    *
-    module ANamespace
-      class AClass
-        def initialize
-          puts "Another object, coming right up!"
-        end
-      end
-    end
-
-    ANamespace::AClass.new #=> Another object, coming right up!
-
-    # we CALL CLASSES in a MODULE by APPENDING the CLASS NAME to the MODULE NAME with TWO COLONS (::)
-
-    The second use case for MODULES is as a CONTAINER for methods, called MODULE METHODS.
-
-    * Also MODULES provide a MECHANISM for MULTIPLE INHERITANCE via MIX-INS. They CANNOT BE INSTANTIATED like classes can.
-
-    module AMixIn
-      def who_am_i?
-        puts "An existentialist, that's who"
-      end
-    end
-
-    # String is already the parent class
-    class DeepString < String
-      # extend adds instance methods from AMixIn as CLASS methods
-      extend AMixIn
-      # include add instance methods from AMixIn as INSTANCE methods
-      include AMixIn
-    end
-
-    METHOD LOOKUP PATH
-     # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
-     First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
 
 
     # ACCESSOR METHODS
@@ -363,6 +432,10 @@ Object Oriented Programming (OOP)
       # self changes depending on the scope it's defined in
       self inside an instance method references the instance (object) that called the method
       self outside of an instance method references the class and can be used to define class methods
+
+
+  CLOSURES IN RUBY (also called ANONYMOUS FUNCTIONS)
+    # A closure CONCEPT to SAVE A 'chunk of code' and EXECUTE IT LATER.
 
 
 
