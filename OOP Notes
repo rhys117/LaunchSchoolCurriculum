@@ -127,6 +127,12 @@ Object Oriented Programming (OOP)
         each OBJECT is an INSTANCE created by INSTANTIATION of it's CLASS (we INSTANTIATED an OBJECT called sparky from the CLASS gooddog)
         The object is returned by calling the CLASS METHOD #new
 
+        Code Example
+
+          object = 'string text'
+          object.class # => String
+
+
       Is everything in ruby an object?
         (http://web.programminghub.io/#/interviewquestions/Ruby)
           Methods are not objects. Blocks are not objects. Keywords are not objects. However, there exist Method objects and Proc objects, and some keywords refer to objects.
@@ -302,8 +308,8 @@ Object Oriented Programming (OOP)
 
 
   METHOD LOOKUP PATH
-   # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
-   First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
+    # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
+    First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
 
 
   ACCESS CONTROL
