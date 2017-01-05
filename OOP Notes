@@ -1,6 +1,6 @@
 Object Oriented Progamming Breakdown and Keywords
 * https://gist.github.com/ryansobol/5252653
-# Launch School OOP book
+# Launch School OOP book or 130 course
 -- rubylearning.com
 
 USEFUL
@@ -9,12 +9,11 @@ https://www.leighhalliday.com/object-hierarchy-in-ruby
 http://practicingruby.com/articles/method-lookup-1
 
 
-
 Object Oriented Programming (OOP)
   Programming paradigm
 
   WHY OOP?
-    # Programmers needed a way to create containers for data that could be changed and manipulated without affecting the whole program. 
+    # Programmers needed a way to create containers for data that could be changed and manipulated without affecting the whole program.
     They needed a a way to SECTION OFF AREAS OF CODE that perorm certain procedures so that their programs could become THE INTERACTION OF SMALL PARTS, as opposed to one massive blob of dependancy.
 
 
@@ -93,7 +92,7 @@ Object Oriented Programming (OOP)
 
       # The to_s method
       Comes built in to every class in Ruby.
-        #puts method automatically calls to_s on its argument
+        # puts method automatically calls to_s on its argument
         also called automatically in string interpolation
         The default to_s method of custom classes prints the objects class and the encodeing of the object id.
           Which is why overriding this method makes sense and is commonplace
@@ -449,8 +448,36 @@ Object Oriented Programming (OOP)
 
 
   CLOSURES also called ANONYMOUS FUNCTIONS
-    # A closure CONCEPT to SAVE A 'chunk of code' and EXECUTE IT LATER.
+    # A closure CONCEPT to SAVE A 'chunk of code' (block) and EXECUTE IT LATER.
+      Three ways in ruby: BLOCK, PROC and LAMBDA
+      note: a BLOCK is part of syntax of a method call.
+        can ONLY APPEAR in an ARGUMENT LIST.
+        AT MOST ONE BLOCK CAN APPEAR IN AN ARGUMENT LIST
 
+
+    BLOCKS
+      Are ENCLOSED in a DO/END statement or BRACKETS {}
+      CAN have MULTIPLE ARGUMENTS.
+        arg names are defined between two pipes |arglist|
+      In ruby EVERY METHOD can take an OPTIONAL BLOCK as implicit parameter.
+        One way of invoking the block is with the YIELD keyword.
+          LINIENT ARITY RULES (arity: rules enforced about number of args passed to a method or block)
+            When using yield and passing in EXTRA ARGS they will be IGNORED and the code will be executed.
+            ARGS note given but required (not enough args passed to the block) will result in them being executed with nil as the arg parameter.
+      They have a return value just the same as methods that is determined by the blocks last expression
+
+
+      PROCS
+        Are OBJECTS
+          lets us call methods, assign to variables and return themselves.
+          In contrast to blocks, you can pass multiple procs to methods (argument list)
+            Does NOT CHECK NUMBER OF ARGS PASSED TO IT.
+              If it requires an arg and none is passed it will return nil. If more args than required passed in, it ignores the extra args.
+
+
+      LAMBDAS
+        Also a member of the PROC OBJECT CLASS but HAS DIFFERENCES
+        DOES CHECK NUMBER of ARGS PASSED TO IT
 
 
 RESERVED WORDS
