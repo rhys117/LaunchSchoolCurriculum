@@ -354,9 +354,9 @@ Object Oriented Programming (OOP)
 
 
   ACCESSOR METHODS
-    # As a convention, getter and setter methods should use the same name as the instance variable they are exposing and setting.
-    GETTER and SETTER methods are way to EXPOSE and CHANGE an OBJECTS STATE.
+    # GETTER and SETTER methods are way to EXPOSE and CHANGE an OBJECTS STATE.
       Can be used from WITHIN the class.
+    As a convention, getter and setter methods should use the same name as the instance variable they are exposing and setting.
 
     Ruby has built-in way to automatically create getter and setter methods.
     All the attr_* methods take a symbol as parameters.
@@ -421,6 +421,10 @@ Object Oriented Programming (OOP)
     What does self mean?
       *
       Self always referes to the current object. But this question is more difficult than it seems because Classes are also objects in ruby.
+      # self changes depending on the scope it's defined in
+      self inside an instance method references the instance (object) that called the method
+      self outside of an instance method references the class and can be used to define class methods
+      *
 
       class WhatIsSelf
         def test
@@ -442,21 +446,18 @@ Object Oriented Programming (OOP)
         At the CLASS level self is the class.
         At the INSTANCE level self is the instance in context, in this case the instance WhatIsSelf at memory location 0x28190.
 
-      # self changes depending on the scope it's defined in
-      self inside an instance method references the instance (object) that called the method
-      self outside of an instance method references the class and can be used to define class methods
-
 
   CLOSURES also called ANONYMOUS FUNCTIONS
     # A closure CONCEPT to SAVE A 'chunk of code' (block) and EXECUTE IT LATER.
       Three ways in ruby: BLOCK, PROC and LAMBDA
-      note: a BLOCK is part of syntax of a method call.
+      A closure remembers the values of variables in the scope when the function of the block was defined and can access them even if executed in a different scope.
         can ONLY APPEAR in an ARGUMENT LIST.
         AT MOST ONE BLOCK CAN APPEAR IN AN ARGUMENT LIST
 
 
     BLOCKS
       Are ENCLOSED in a DO/END statement or BRACKETS {}
+      Part of the syntax for a method call.
       CAN have MULTIPLE ARGUMENTS.
         arg names are defined between two pipes |arglist|
       In ruby EVERY METHOD can take an OPTIONAL BLOCK as implicit parameter.
@@ -464,7 +465,30 @@ Object Oriented Programming (OOP)
           LINIENT ARITY RULES (arity: rules enforced about number of args passed to a method or block)
             When using yield and passing in EXTRA ARGS they will be IGNORED and the code will be executed.
             ARGS note given but required (not enough args passed to the block) will result in them being executed with nil as the arg parameter.
-      They have a return value just the same as methods that is determined by the blocks last expression
+      They have a return value just the same as methods that is determined by the blocks last expression.
+      When to use:
+        When the method implementor is unsure of how the method will be called by the method caller.
+        Possibly instead of passing in a 'flag' which may result in an if or case statement.
+          eg select that takes a block instead of select_odds, and select_greater_than(num)
+
+        code example
+
+          def none?(array)
+            array.each { |el| return false if yield(el) }
+            false
+          end
+
+        Sandwich code - methods that have to perform a 'before' and 'after' action.
+
+        code example
+
+          def time_taken
+            start = Time.now
+            yield
+            end - Time.now
+
+            start - end
+          end
 
 
       PROCS
