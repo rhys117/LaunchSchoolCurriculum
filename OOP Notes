@@ -490,6 +490,12 @@ Object Oriented Programming (OOP)
             start - end
           end
 
+        METHODS WITH AN EXPLICIT BLOCK PARAMETER
+          &block is a special paramater that will convert block passed to the method into a Proc object.
+          def example(&block)
+            puts "What's &block? #{block}"
+          end
+
 
       PROCS
         Are OBJECTS

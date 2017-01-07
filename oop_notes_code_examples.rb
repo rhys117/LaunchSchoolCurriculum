@@ -163,6 +163,7 @@
     'Mr' + @instance_var.split.last
   end
 
+
 # Self
   class WhatIsSelf
     def test
