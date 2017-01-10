@@ -45,7 +45,7 @@ Object Oriented Programming (OOP)
       INSTANCE VARIABLES - Instance variables are availble across methods for any particular instance or object. This means that instance variables change from object to object. Instance variables are preceded by the sign (@)
       # Exist as long as the objects instance exists and is one of the ways we tie data to it. Instance variables are responsible for keeping track of data about the state of an object.
 
-      CLASS VARIABLES - Class variables are available across different objects. A class variables belongs to the class and is a characteristic of a class. They are preceded by the sign (@@)
+      CLASS VARIABLES - Class variables are available across different objects that are instances of the same class. A class variable belongs to the class and is a characteristic of that Class. They are preceded by the sign (@@)
 
       GLOBAL VARIABLES - Class variables are not available across classes. If you want to have a single variable, which is available across classes, you need to define a global variable. The global varaibles are always preceded by the dollar sign ($)
 
@@ -91,7 +91,8 @@ Object Oriented Programming (OOP)
       -- Method overriding, in OOP is a language feature that allows a subclass to provide a specific implementation of a method that is already provided by one of its superclasses. The implementation in the subclass overrides (replaces) the implementation in the superclass.
 
       # The to_s method
-      Comes built in to every class in Ruby.
+        (tutorialspoint) - Any class you define should have a to_s instance method to return the correct string representation of that object.
+        Comes built in to every class in Ruby.
         # puts method automatically calls to_s on its argument
         also called automatically in string interpolation
         The default to_s method of custom classes prints the objects class and the encodeing of the object id.
@@ -191,6 +192,7 @@ Object Oriented Programming (OOP)
     # a CONSTRUCTOR is a subroutine (METHOD) that prepares the new object for use.
       In Ruby's case the INITIALIZE method (initialize is invoked during performing the #new method)
         (ruby-doc.org) #new calls #allocate to create a new object of the class's class, then invokes that objects #initialize method passing in args
+        The initialize method does not return any values
 
 
   INHERITANCE (CLASS INHERITANCE)
@@ -212,7 +214,7 @@ Object Oriented Programming (OOP)
 
       puts LowerInHierachy.new.inherited_method # => "I've been inherited!"
 
-    # This means all the methods in the Superclass are availble to the Subclass.
+    # This means all the methods in the Superclass are availble to the Subclass, with the exception of the contructor method which cannot be inherited (however can be called with super)
     We can override methods by defining them in the Subclass.
 
     Inheritance can be a great way to remove duplication in your code base. It also follows the DRY(do not repeat yourself) theory.
@@ -316,6 +318,7 @@ Object Oriented Programming (OOP)
       Thats how other classes and objects will interact with this class and its objects
 
     A PRIVATE METHOD works IN the CLASS but are UNAVAILBLE to the rest of the program. Private methods are defined by using the KEYWORD PRIVATE in our program. ANYTHING UNDER private will be IS PRIVATE. UNLESS ANOTHER KEYWORD is used to NEGATE IT.
+      note: The initialize method is always private automatically
 
     * All methods, no matter the access control can be accessed WITHIN the class. But what about outside callers?
     Public methods enforce no access control - they can be called on any scope.
