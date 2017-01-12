@@ -6,16 +6,35 @@
 # Classes
   class WhatAreClasses
     def initialize
-      @data = "I'm instance data of this object. Hello!"
+      @data = "I'm instance data of this object. Hello!" # state
     end
 
-    def method
+    def method # behaivor
       puts @data.gsub("instance", "altered")
     end
   end
 
   object = WhatAreClasses.new
   object.method # => I'm altered data of this object. Hello!
+
+
+# Class Variables
+  class ClassVariableCounts
+    @@count = 0
+
+    def initialize
+      @@count += 1
+    end
+
+    def self.count
+      @@count
+    end
+  end
+
+  first = ClassVariableCounts.new
+  second = ClassVariableCounts.new
+
+  ClassVariableCounts.count # => 2
 
 
 # Inheritance
@@ -91,6 +110,7 @@
 
   ANamespace::AClass.new #=> Another object, coming right up!
 
+
 # Method Lookup
   module LookedInFirst
     #
@@ -160,7 +180,7 @@
 
   # Custom Getter method
   def instance_var
-    'Mr' + @instance_var.split.last
+    'Mr ' + @instance_var.split.last
   end
 
 
@@ -178,5 +198,58 @@
   WhatIsSelf.test #=> At the class level self is WhatIsSelf
 
   WhatIsSelf.new.test #=> At the instance level, self is #<WhatIsSelf:memorylocation>
+
+
+# Closures
+  def none?(array)
+    array.each { |el| return false if yield(el) }
+    true
+  end
+
+  # As sandwich code
+  def time_taken
+    start = Time.now
+    yield
+    finish = Time.now
+
+    start - finish
+  end
+
+  # Procs
+  example = proc { |var| puts var }
+  example.call(2) # => 2 (returns nil due to puts)
+
+  example.call(1, 2) # => 1 (returns nil due to puts)
+
+  # Lambdas
+  example = lambda { |var| puts var }
+  example.call(2) # => 2 (returns nil due to puts)
+
+  example.call(1, 2) # => wrong number of args
+
+  # Passing blocs to methods
+
+
+# Testing
+  require 'minitest/autorun'
+
+  class EqualityTest < Minitest::Test
+    def test_for_equal_values
+      first = 'example'
+      second = 'example'
+
+      assert_equal(first, second)
+    end
+  end
+
+=begin
+assert(test)                      Fails unless test is truthy.
+assert_equal(exp, act)            Fails unless exp == act.
+assert_nil(obj)                   Fails unless obj is nil.
+assert_raises(*exp) { ... }       Fails unless block raises one of *exp.
+assert_instance_of(cls, obj)      Fails unless obj is an instance of cls.
+assert_includes(collection, obj)  Fails unless collection includes obj.
+=end
+
 
 

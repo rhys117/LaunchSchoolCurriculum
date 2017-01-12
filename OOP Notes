@@ -10,7 +10,22 @@ http://practicingruby.com/articles/method-lookup-1
 
 
 Object Oriented Programming (OOP)
-  Programming paradigm
+  Basic Concepts
+    Abstraction
+      Simplifying complex reality by modeling classes appropriate to the problem
+    Polymorphism
+      Data can be represented in many different ways/types
+    Encapsulation
+      Hiding functionality so that data cannot be changed without intent
+    Inheritance
+      Relation between two classes
+
+
+  Me-OOP programming helps encapsulate different parts of a program so that when the programmer makes one change is doesn't create a ripple effect across the whole program and create unexpected changes. By encapsulating different parts of the program in classes a programmer can more easily work on segments without creating concern of breaking the rest of his or her code. You can also reuse code and modules making it easy to reuse across different applications with minimal or no modification.
+
+  It does however use more processing power and is less efficient. It can also cause bloated code by including things that are unnecessary
+
+  OBJECT ORIENTATED DESIGN is a popular term used to discribe the approach of using interacting objects that are structured in such a way to create a solution to a software problem. It often helps the programmers thinking as nouns and verbs are used for objects and methods that describe the behavior in a more real world relatable sense.
 
   WHY OOP?
     # Programmers needed a way to create containers for data that could be changed and manipulated without affecting the whole program.
@@ -35,6 +50,7 @@ Object Oriented Programming (OOP)
 
 
   VARIABLES
+    --Variables are used to hold references to objects. Variables themselves have no type, nor are they objects themselves.
     can store INFORMATION
     using MEMORY POINTERS and built-in DATA TYPES (such as strings, hash tables, arrays)
 
@@ -43,11 +59,11 @@ Object Oriented Programming (OOP)
       LOCAL VARIABLES - Local variables are the variables that are defined in a method. Local variables are not availble outside the method
 
       INSTANCE VARIABLES - Instance variables are availble across methods for any particular instance or object. This means that instance variables change from object to object. Instance variables are preceded by the sign (@)
-      # Exist as long as the objects instance exists and is one of the ways we tie data to it. Instance variables are responsible for keeping track of data about the state of an object.
+      # Exist as long as the objects instance exists and is one of the ways we tie data to it. Instance variables are responsible for keeping track of data about the state of an object. If an instance variable is not initialized it will return nil.
 
       CLASS VARIABLES - Class variables are available across different objects that are instances of the same class. A class variable belongs to the class and is a characteristic of that Class. They are preceded by the sign (@@)
 
-      GLOBAL VARIABLES - Class variables are not available across classes. If you want to have a single variable, which is available across classes, you need to define a global variable. The global varaibles are always preceded by the dollar sign ($)
+      GLOBAL VARIABLES - If you want to have a single variable, which is available across classes, you need to define a global variable. The global varaibles are always preceded by the dollar sign ($)
 
       NOT REALLY A VARIABLE
       and
@@ -58,7 +74,7 @@ Object Oriented Programming (OOP)
   METHODS also called PROCEDURES
     can take INPUT, generate OUTPUT and MANIPULATE DATA.
 
-    * There are three ways of to INVOKE a method in ruby.
+    * There are three ways to INVOKE a method in ruby.
     object = Object.new
     object.method_id
     object.send(:method_id)
@@ -121,6 +137,8 @@ Object Oriented Programming (OOP)
       To some it's also the root class in ruby (Object).
       Classes themselves descend from Object root class.
 
+    --An object serves as a container for data (state) and controls the access of that data (behaivors). Things and object knows about itself corrospond to it's instance variables (state), things an object can do are called methods.
+
     OBJECTS contain DATA in form of a FIELD/S
       in RUBY this is data ENCAPSULATED by a CLASS * To some it's also the root class in ruby (Object)
         ATTRIBUTES (STATES) and BEHAVIOURS of objects DEFINED in CLASSES.
@@ -138,7 +156,7 @@ Object Oriented Programming (OOP)
         (http://web.programminghub.io/#/interviewquestions/Ruby)
           Methods are not objects. Blocks are not objects. Keywords are not objects. However, there exist Method objects and Proc objects, and some keywords refer to objects.
             To understand Method objects - http://stackoverflow.com/questions/2602340/methods-in-ruby-objects-or-not
-                                           http://ruby-doc.org/core-2.2.0/Method.html
+            http://ruby-doc.org/core-2.2.0/Method.html
         (http://rubylearning.com/blog/2010/09/27/almost-everything-is-an-object-and-everything-is-almost-an-object/)
           It's almost true, but not quite. Not everything in ruby is an object BUT there's a corollary to this point EVERYTHING DOES EVALUATE TO AN OBJECT.
         # OOP BOOK
@@ -268,7 +286,7 @@ Object Oriented Programming (OOP)
       A COLLECTION of behaivours that via MIXINS are usable in other CLASSES
       Using MODULES to GROUP COMMON BEHAVIOURS allows us to practice DRY (do not repeat) design and gives a FLEXIBLE design
       COMMON CONVENTION
-        'able' behaviour use module methods (swimmable, climable)
+        ADJECTIVES 'able' behaviour use module methods (swimmable, climable)
         is-a relationship - CLASS INHERITANCE
         has-a relationship - MODULE METHODS
       You can MIXIN AS MANY MODULES as you like.
@@ -312,7 +330,7 @@ Object Oriented Programming (OOP)
 
 
   METHOD LOOKUP PATH
-    # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes are inspected when you call a method.
+    # Ruby has a lookup path that it follows each time a method is called. We can use the ANCESTORS method on any class to find out the METHOD LOOKUP CHAIN. That is the order in which classes and modules are inspected when you call a method.
     First Ruby will look in the SUPERCLASS FIRST, MIXIN MODULES IN REVERSE THEN MOVE ON TO THE SUBCLASS AND IT'S MIXINS/SUBCLASS so on so forth. Ruby will STOP LOOKING ONCE IT HAS FOUND THE METHOD.
 
 
@@ -325,7 +343,7 @@ Object Oriented Programming (OOP)
 
     * All methods, no matter the access control can be accessed WITHIN the class. But what about outside callers?
     Public methods enforce no access control - they can be called on any scope.
-    Protected methods are only accessible to other objects of the SAME class.
+    Protected methods are only accessible to other objects of the SAME class and its SUBCLASSES.
     Private methods are only accessible within the context of the current object.
 
     class AccessLevel
@@ -360,6 +378,7 @@ Object Oriented Programming (OOP)
 
 
   ACCESSOR METHODS
+    --Make variables availble from outside the class
     # GETTER and SETTER methods are way to EXPOSE and CHANGE an OBJECTS STATE.
       Can be used from WITHIN the class.
     As a convention, getter and setter methods should use the same name as the instance variable they are exposing and setting.
@@ -383,7 +402,9 @@ Object Oriented Programming (OOP)
     This one line of code gives us six getter/setter instance methods: name, name=, height, height=, weight, weight= It also gives us three instance variables: @name, @height, @weight
     NOTE:
       (http://stackoverflow.com/questions/15514378/does-rubys-attr-accessor-automatically-create-instance-variables-for-attributes)
+
       All attr_* methods DO NOT actually initialize the instance variable (this disagrees with the OOP book above but can be proven as below)
+
         class Test
           attr_accessor :variable
         end
@@ -462,28 +483,34 @@ Object Oriented Programming (OOP)
 
 
     BLOCKS
+      --Ruby Code blocks are chunks of code between braces or between do- end that you can associate with method invocations.
+
+      If you provide a code block when you call a method, then inside the method, you can yield control to that code block - suspend execution of the method; execute the code in the block; and return control to the method body, right after the call to yield. If no code block is passed and yield is called, Ruby raises an exception:
+
+      You can provide parameters to the call to yield: these will be passed to the block. Within the block, you list the names of the arguments to receive the parameters between vertical bars (|).
+
       # Are ENCLOSED in a DO/END statement or BRACKETS {}
       Part of the syntax for a method call.
       CAN have MULTIPLE ARGUMENTS.
         arg names are defined between two pipes |arglist|
+
       In ruby EVERY METHOD can take an OPTIONAL BLOCK as implicit parameter.
         One way of invoking the block is with the YIELD keyword.
           LINIENT ARITY RULES (arity: rules enforced about number of args passed to a method or block)
             When using yield and passing in EXTRA ARGS they will be IGNORED and the code will be executed.
             ARGS note given but required (not enough args passed to the block) will result in them being executed with nil as the arg parameter.
       They have a return value just the same as methods that is determined by the blocks last expression.
-      When to use:
+
+      WHEN TO USE:
         When the method implementor is unsure of how the method will be called by the method caller.
         Possibly instead of passing in a 'flag' which may result in an if or case statement.
           eg select that takes a block instead of select_odds, and select_greater_than(num)
-
-      (rubylearning.com) If you provide a code block when you call a method, then inside the method, you can yield control to that code block - suspend execution of the method; execute the code in the block; and return control to the method body, right after the call to yield. If no code block is passed and yield is called, Ruby raises an exception:
 
         code example
 
           def none?(array)
             array.each { |el| return false if yield(el) }
-            false
+            true
           end
 
         Sandwich code - methods that have to perform a 'before' and 'after' action.
@@ -493,9 +520,9 @@ Object Oriented Programming (OOP)
           def time_taken
             start = Time.now
             yield
-            end - Time.now
+            finish - Time.now
 
-            start - end
+            start - finish
           end
 
         METHODS WITH AN EXPLICIT BLOCK PARAMETER
@@ -504,6 +531,7 @@ Object Oriented Programming (OOP)
             puts "What's &block? #{block}"
           end
 
+        --Remember you cannot pass methods into other methods (but you can pass procs into methods), and methods cannot return other methods (but they can return procs).
 
       PROCS
         Are OBJECTS
@@ -511,6 +539,9 @@ Object Oriented Programming (OOP)
           In contrast to blocks, you can pass multiple procs to methods (argument list)
             Does NOT CHECK NUMBER OF ARGS PASSED TO IT.
               If it requires an arg and none is passed it will return nil. If more args than required passed in, it ignores the extra args.
+
+        &:method_name in front of a method tells Ruby to try and convert the method to a proc object
+
 
 
       LAMBDAS
@@ -558,4 +589,4 @@ RESERVED WORDS
   while             Executes code while the conditional statement is true.
   yield             Executes the block passed to the method.
   _ _FILE_ _        Name of current source file.
-  _ _LINE_ _     Number of current line in the current source fil
+  _ _LINE_ _        Number of current line in the current source file
