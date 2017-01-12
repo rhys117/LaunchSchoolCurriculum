@@ -14,7 +14,7 @@ Object Oriented Programming (OOP)
 
   WHY OOP?
     # Programmers needed a way to create containers for data that could be changed and manipulated without affecting the whole program.
-    They needed a a way to SECTION OFF AREAS OF CODE that perorm certain procedures so that their programs could become THE INTERACTION OF SMALL PARTS, as opposed to one massive blob of dependancy.
+    They needed a a way to SECTION OFF AREAS OF CODE that perform certain procedures so that their programs could become THE INTERACTION OF SMALL PARTS, as opposed to one massive blob of dependancy.
 
 
   ENCAPSULATION and POLYMORPHISM
@@ -49,6 +49,7 @@ Object Oriented Programming (OOP)
 
       GLOBAL VARIABLES - Class variables are not available across classes. If you want to have a single variable, which is available across classes, you need to define a global variable. The global varaibles are always preceded by the dollar sign ($)
 
+      NOT REALLY A VARIABLE
       and
       CONSTANTS - Begin with a capital (although Ruby convention is all-caps snakecase) defined within a class or module can be accessed from within that class or module and those defined outside a class or module can be accesed globally. Making an assignment to a constant that is aready initialized procudes a warning.
       # used as a variable that will never change for any reason.
@@ -194,6 +195,8 @@ Object Oriented Programming (OOP)
         (ruby-doc.org) #new calls #allocate to create a new object of the class's class, then invokes that objects #initialize method passing in args
         The initialize method does not return any values
 
+        (rubylearning.com) The construction is done via the new class method, the initialization is done via the initialize instance method. initialize is not a constructor.
+
 
   INHERITANCE (CLASS INHERITANCE)
     -- Inheritance is a relation between two classes. The benefit of inheritance is that that lower classes down the hierachy get the features of those higher up but can also add specific features of their own. In ruby a class (subclass) can only inherit from a single other class (superclass), HOWEVER that class can inherit from another class and so on and so forth.
@@ -214,7 +217,7 @@ Object Oriented Programming (OOP)
 
       puts LowerInHierachy.new.inherited_method # => "I've been inherited!"
 
-    # This means all the methods in the Superclass are availble to the Subclass, with the exception of the contructor method which cannot be inherited (however can be called with super)
+    # This means all the methods in the Superclass are availble to the Subclass. In Ruby, initialize is an ordinary method and is inherited like any other.
     We can override methods by defining them in the Subclass.
 
     Inheritance can be a great way to remove duplication in your code base. It also follows the DRY(do not repeat yourself) theory.
@@ -459,7 +462,7 @@ Object Oriented Programming (OOP)
 
 
     BLOCKS
-      Are ENCLOSED in a DO/END statement or BRACKETS {}
+      # Are ENCLOSED in a DO/END statement or BRACKETS {}
       Part of the syntax for a method call.
       CAN have MULTIPLE ARGUMENTS.
         arg names are defined between two pipes |arglist|
@@ -473,6 +476,8 @@ Object Oriented Programming (OOP)
         When the method implementor is unsure of how the method will be called by the method caller.
         Possibly instead of passing in a 'flag' which may result in an if or case statement.
           eg select that takes a block instead of select_odds, and select_greater_than(num)
+
+      (rubylearning.com) If you provide a code block when you call a method, then inside the method, you can yield control to that code block - suspend execution of the method; execute the code in the block; and return control to the method body, right after the call to yield. If no code block is passed and yield is called, Ruby raises an exception:
 
         code example
 
