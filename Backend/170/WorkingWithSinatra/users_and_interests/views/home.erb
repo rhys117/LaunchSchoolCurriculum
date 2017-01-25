@@ -1,14 +1,11 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= @title %></title>
-  </head>
+<h1>Users</h1>
 
-  <body>
-    <h1>Users and Interests</h1>
-    <p><%= @title %></p>
-
-  </body>
-</html>
+<ul>
+  <% @users.each do |user| %>
+    <li>
+      <a href="/users/<%= user %>">
+        <%= user %>
+      </a>
+    </li>
+  <% end %>
+</ul>

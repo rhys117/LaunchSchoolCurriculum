@@ -1,0 +1,35 @@
+<div class="title">
+  <h2><%= @user %></h2>
+</div>
+
+<div class="email">
+  <h3>Email</h4>
+  <p><%= @email %>
+</div>
+
+<div class="interests">
+  <h3>Interests</h4>
+  <p><%= @interests.join(', ') %></p>
+</div>
+
+<div class="other_users">
+  <h4>Other Users</h4>
+  <ul>
+    <% @users.each do |user| %>
+      <% unless user == @user %>
+        <li>
+          <a href="/users/<%= user %>">
+          <%= user %>
+          </a>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
+
+<!--   <h4>Interests</h4>
+  <ul>
+    <% @interests.each do |interest| %>
+      <li><%= interest %></li>
+    <% end %>
+  </ul> -->
