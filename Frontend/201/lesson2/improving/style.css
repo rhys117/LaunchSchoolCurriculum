@@ -1,0 +1,76 @@
+html {
+  font: normal 14px Helvetica, Arial, sans-serif;
+}
+
+body {
+  color: #222222;
+  background: #2E0927;
+}
+
+header[role=banner] {
+  padding: 1rem 2.5rem;
+  background: #FF2D00;
+}
+
+header[role=banner] img {
+  width: 80px;
+}
+
+header[role=banner] nav {
+  float: right;
+}
+
+header[role=banner] nav a {
+  margin-left: .8rem;
+}
+
+header[role=banner] ul { 
+  padding: 0;
+  margin: 0; 
+}
+
+header[role=banner] li {
+  list-style: none;
+  display: inline;
+  margin: 0;
+}
+
+main {
+  padding: 2rem 2.5rem;
+  background: #ffffff;
+}
+
+p {
+  text-indent: 1rem;
+}
+
+.circle {
+  list-style: circle;
+}
+
+dl {
+  padding-bottom: 1rem;
+}
+
+dt, dd {
+  padding: 0 0 .5rem 0;
+  margin: 0;
+  text-indent: 0;
+}
+
+dt {
+  font-weight: bold;
+}
+
+
+.button {
+  text-decoration: none;
+  color: #FF8C00;
+  display: inline-block;
+  padding: .8rem 1.2rem;
+  background: #04756F;
+  border: none;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+}

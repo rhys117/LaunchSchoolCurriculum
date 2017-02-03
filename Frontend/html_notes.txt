@@ -1,0 +1,13 @@
+What DOCTYPE do you use and why? - Interview Question.
+  What works best for you depends on what your situation is.
+
+  If you want your HTML page to work correctly on very very old browsers that don't support <!DOCTYPE html> (and yes, there were such browsers, like Netscape 6) then the strict doctype is really the only possibility.
+
+  If you want your HTML page to validate, AND you must, for some reason that you don't want to reveal, use elements like <center> or <font> or <u>, then transitional is the doctype of choice.
+
+  However, those are really edge cases, and you should consider forgetting about them. In the majority of cases, <!DOCTYPE html> will do. Don't look to the past; look to the future.
+
+Reading:
+https://css-tricks.com/fighting-the-space-between-inline-block-elements/
+https://html5forwebdesigners.com/today/ (and other chapters)
+https://launchschool.com/lessons/283ebb5e/assignments/998ed071 Go over this again
