@@ -11,3 +11,4 @@ Reading:
 https://css-tricks.com/fighting-the-space-between-inline-block-elements/
 https://html5forwebdesigners.com/today/ (and other chapters)
 https://launchschool.com/lessons/283ebb5e/assignments/998ed071 Go over this again
+http://www.quirksmode.org/css/selectors/

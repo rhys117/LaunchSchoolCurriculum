@@ -1,12 +1,55 @@
 html {
-  background: url(design_files/bg_body.gif);
+  background: #2f2840 url(design_files/bg_body.gif);
 }
 
-header {
+header, main, footer {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+body {
+  color: #45494d;
+  font: normal 20px Helvetica, Arial, sans-serif;
+  padding: 75px 0 50px 0;
+}
+
+
+h1 {
   text-align: center;
-  padding-top: 100px;
+  padding: 0 0 50px 0;
 }
 
 main {
+  padding: 75px 0 0 0;
   background-color: white;
+  text-align: center;
+}
+
+article {
+  padding: 0 110px 100px 110px;
+}
+
+h2 {
+  font-size: 36px;
+}
+
+h3 {
+  font-size: 24px;
+  color: #3e98b2;
+}
+
+footer {
+  padding: 30px 0;
+  background-color: #e7e7e7;
+}
+
+footer ul {
+  padding-left: 0;
+  margin: 0;
+  text-align: center;
+}
+
+footer li {
+  display: inline;
+  padding: 0 62px;
 }
