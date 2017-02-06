@@ -1,0 +1,12 @@
+html {
+  background: url(design_files/bg_body.gif);
+}
+
+header {
+  text-align: center;
+  padding-top: 100px;
+}
+
+main {
+  background-color: white;
+}
