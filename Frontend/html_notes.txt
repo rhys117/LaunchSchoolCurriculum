@@ -12,3 +12,7 @@ https://css-tricks.com/fighting-the-space-between-inline-block-elements/
 https://html5forwebdesigners.com/today/ (and other chapters)
 https://launchschool.com/lessons/283ebb5e/assignments/998ed071 Go over this again
 http://www.quirksmode.org/css/selectors/
+http://codepen.io/knwang/pen/VaPBRY
+https://d3jtzah944tvom.cloudfront.net/lesson_3/the_box_model/box_model_v2.html
+http://learnlayout.com/
+http://learnlayout.com/display.html

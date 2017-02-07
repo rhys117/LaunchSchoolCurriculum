@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Positioning exercises</title>
+
+    <style>
+      section {
+        width: 800px;
+        margin: 0 auto;
+      }
+
+      #positioned {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        margin-left: -200px;
+        width: 400px;
+        padding: 30px 15px;
+        background: #ffffcc;
+        box-sizing: border-box;
+        z-index: 2;
+      }
+
+      #positioned span {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 20px;
+        height: 20px;
+        background: #fcfc99;
+      }
+
+      #fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+        background: rgba(0, 0, 0, .6);
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacus lorem, porta at risus ac, interdum iaculis diam. Morbi vehicula enim nec scelerisque mollis. Quisque tortor arcu, ultricies et eleifend a, mollis ac diam. Praesent pellentesque felis in aliquet sagittis. Nullam vitae nunc in libero vulputate ultricies. Integer orci neque, volutpat eget tellus ut, aliquet hendrerit sem. Phasellus dictum pellentesque mauris non ultrices. Suspendisse faucibus felis vitae laoreet porttitor. Proin varius ultrices justo, a dictum est ornare vel. Nulla facilisi. Morbi non interdum turpis. In eget fringilla odio. Aliquam pellentesque varius tellus sed vestibulum. Suspendisse potenti. Aenean fermentum lorem at erat auctor interdum. Quisque tellus nulla, condimentum a convallis ut, congue et velit.</p>
+
+      <p>Praesent tristique nec mi eget sagittis. Praesent odio quam, pellentesque eu velit et, laoreet fermentum ante. Nunc vestibulum venenatis dolor, et posuere erat pulvinar sit amet. Praesent blandit neque eu ligula iaculis, sit amet dignissim dui imperdiet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dolor sem, accumsan in nibh non, cursus ultrices libero. Ut iaculis ante vitae egestas suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis gravida aliquet volutpat. Quisque id malesuada ex, et porttitor erat. Integer convallis facilisis gravida. Maecenas odio ipsum, facilisis vitae dictum fermentum, faucibus tempor quam.</p>
+
+      <p>Quisque scelerisque imperdiet erat vitae condimentum. Mauris porta odio ac felis cursus fermentum. Nulla nibh neque, semper sit amet fringilla non, dictum blandit neque. Duis sit amet suscipit quam. Curabitur vitae scelerisque velit, sed porttitor neque. Ut elementum dolor et dapibus laoreet. In sem leo, lobortis in mi eu, faucibus ullamcorper dui. Aenean vitae quam laoreet, sagittis lacus sed, viverra erat. Mauris vel nunc id lectus vehicula vehicula id eu metus. Nunc tincidunt erat mi, quis porta odio tincidunt in. Sed porttitor nulla auctor, lobortis sem congue, rutrum ligula.</p>
+
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacus lorem, porta at risus ac, interdum iaculis diam. Morbi vehicula enim nec scelerisque mollis. Quisque tortor arcu, ultricies et eleifend a, mollis ac diam. Praesent pellentesque felis in aliquet sagittis. Nullam vitae nunc in libero vulputate ultricies. Integer orci neque, volutpat eget tellus ut, aliquet hendrerit sem. Phasellus dictum pellentesque mauris non ultrices. Suspendisse faucibus felis vitae laoreet porttitor. Proin varius ultrices justo, a dictum est ornare vel. Nulla facilisi. Morbi non interdum turpis. In eget fringilla odio. Aliquam pellentesque varius tellus sed vestibulum. Suspendisse potenti. Aenean fermentum lorem at erat auctor interdum. Quisque tellus nulla, condimentum a convallis ut, congue et velit.</p>
+
+      <p>Praesent tristique nec mi eget sagittis. Praesent odio quam, pellentesque eu velit et, laoreet fermentum ante. Nunc vestibulum venenatis dolor, et posuere erat pulvinar sit amet. Praesent blandit neque eu ligula iaculis, sit amet dignissim dui imperdiet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dolor sem, accumsan in nibh non, cursus ultrices libero. Ut iaculis ante vitae egestas suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis gravida aliquet volutpat. Quisque id malesuada ex, et porttitor erat. Integer convallis facilisis gravida. Maecenas odio ipsum, facilisis vitae dictum fermentum, faucibus tempor quam.</p>
+
+      <p>Quisque scelerisque imperdiet erat vitae condimentum. Mauris porta odio ac felis cursus fermentum. Nulla nibh neque, semper sit amet fringilla non, dictum blandit neque. Duis sit amet suscipit quam. Curabitur vitae scelerisque velit, sed porttitor neque. Ut elementum dolor et dapibus laoreet. In sem leo, lobortis in mi eu, faucibus ullamcorper dui. Aenean vitae quam laoreet, sagittis lacus sed, viverra erat. Mauris vel nunc id lectus vehicula vehicula id eu metus. Nunc tincidunt erat mi, quis porta odio tincidunt in. Sed porttitor nulla auctor, lobortis sem congue, rutrum ligula.</p>
+
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacus lorem, porta at risus ac, interdum iaculis diam. Morbi vehicula enim nec scelerisque mollis. Quisque tortor arcu, ultricies et eleifend a, mollis ac diam. Praesent pellentesque felis in aliquet sagittis. Nullam vitae nunc in libero vulputate ultricies. Integer orci neque, volutpat eget tellus ut, aliquet hendrerit sem. Phasellus dictum pellentesque mauris non ultrices. Suspendisse faucibus felis vitae laoreet porttitor. Proin varius ultrices justo, a dictum est ornare vel. Nulla facilisi. Morbi non interdum turpis. In eget fringilla odio. Aliquam pellentesque varius tellus sed vestibulum. Suspendisse potenti. Aenean fermentum lorem at erat auctor interdum. Quisque tellus nulla, condimentum a convallis ut, congue et velit.</p>
+
+      <p>Praesent tristique nec mi eget sagittis. Praesent odio quam, pellentesque eu velit et, laoreet fermentum ante. Nunc vestibulum venenatis dolor, et posuere erat pulvinar sit amet. Praesent blandit neque eu ligula iaculis, sit amet dignissim dui imperdiet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dolor sem, accumsan in nibh non, cursus ultrices libero. Ut iaculis ante vitae egestas suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis gravida aliquet volutpat. Quisque id malesuada ex, et porttitor erat. Integer convallis facilisis gravida. Maecenas odio ipsum, facilisis vitae dictum fermentum, faucibus tempor quam.</p>
+
+      <p>Quisque scelerisque imperdiet erat vitae condimentum. Mauris porta odio ac felis cursus fermentum. Nulla nibh neque, semper sit amet fringilla non, dictum blandit neque. Duis sit amet suscipit quam. Curabitur vitae scelerisque velit, sed porttitor neque. Ut elementum dolor et dapibus laoreet. In sem leo, lobortis in mi eu, faucibus ullamcorper dui. Aenean vitae quam laoreet, sagittis lacus sed, viverra erat. Mauris vel nunc id lectus vehicula vehicula id eu metus. Nunc tincidunt erat mi, quis porta odio tincidunt in. Sed porttitor nulla auctor, lobortis sem congue, rutrum ligula.</p>
+
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacus lorem, porta at risus ac, interdum iaculis diam. Morbi vehicula enim nec scelerisque mollis. Quisque tortor arcu, ultricies et eleifend a, mollis ac diam. Praesent pellentesque felis in aliquet sagittis. Nullam vitae nunc in libero vulputate ultricies. Integer orci neque, volutpat eget tellus ut, aliquet hendrerit sem. Phasellus dictum pellentesque mauris non ultrices. Suspendisse faucibus felis vitae laoreet porttitor. Proin varius ultrices justo, a dictum est ornare vel. Nulla facilisi. Morbi non interdum turpis. In eget fringilla odio. Aliquam pellentesque varius tellus sed vestibulum. Suspendisse potenti. Aenean fermentum lorem at erat auctor interdum. Quisque tellus nulla, condimentum a convallis ut, congue et velit.</p>
+
+      <p>Praesent tristique nec mi eget sagittis. Praesent odio quam, pellentesque eu velit et, laoreet fermentum ante. Nunc vestibulum venenatis dolor, et posuere erat pulvinar sit amet. Praesent blandit neque eu ligula iaculis, sit amet dignissim dui imperdiet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dolor sem, accumsan in nibh non, cursus ultrices libero. Ut iaculis ante vitae egestas suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis gravida aliquet volutpat. Quisque id malesuada ex, et porttitor erat. Integer convallis facilisis gravida. Maecenas odio ipsum, facilisis vitae dictum fermentum, faucibus tempor quam.</p>
+
+      <p>Quisque scelerisque imperdiet erat vitae condimentum. Mauris porta odio ac felis cursus fermentum. Nulla nibh neque, semper sit amet fringilla non, dictum blandit neque. Duis sit amet suscipit quam. Curabitur vitae scelerisque velit, sed porttitor neque. Ut elementum dolor et dapibus laoreet. In sem leo, lobortis in mi eu, faucibus ullamcorper dui. Aenean vitae quam laoreet, sagittis lacus sed, viverra erat. Mauris vel nunc id lectus vehicula vehicula id eu metus. Nunc tincidunt erat mi, quis porta odio tincidunt in. Sed porttitor nulla auctor, lobortis sem congue, rutrum ligula.</p>
+
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacus lorem, porta at risus ac, interdum iaculis diam. Morbi vehicula enim nec scelerisque mollis. Quisque tortor arcu, ultricies et eleifend a, mollis ac diam. Praesent pellentesque felis in aliquet sagittis. Nullam vitae nunc in libero vulputate ultricies. Integer orci neque, volutpat eget tellus ut, aliquet hendrerit sem. Phasellus dictum pellentesque mauris non ultrices. Suspendisse faucibus felis vitae laoreet porttitor. Proin varius ultrices justo, a dictum est ornare vel. Nulla facilisi. Morbi non interdum turpis. In eget fringilla odio. Aliquam pellentesque varius tellus sed vestibulum. Suspendisse potenti. Aenean fermentum lorem at erat auctor interdum. Quisque tellus nulla, condimentum a convallis ut, congue et velit.</p>
+
+      <p>Praesent tristique nec mi eget sagittis. Praesent odio quam, pellentesque eu velit et, laoreet fermentum ante. Nunc vestibulum venenatis dolor, et posuere erat pulvinar sit amet. Praesent blandit neque eu ligula iaculis, sit amet dignissim dui imperdiet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dolor sem, accumsan in nibh non, cursus ultrices libero. Ut iaculis ante vitae egestas suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis gravida aliquet volutpat. Quisque id malesuada ex, et porttitor erat. Integer convallis facilisis gravida. Maecenas odio ipsum, facilisis vitae dictum fermentum, faucibus tempor quam.</p>
+
+      <p>Quisque scelerisque imperdiet erat vitae condimentum. Mauris porta odio ac felis cursus fermentum. Nulla nibh neque, semper sit amet fringilla non, dictum blandit neque. Duis sit amet suscipit quam. Curabitur vitae scelerisque velit, sed porttitor neque. Ut elementum dolor et dapibus laoreet. In sem leo, lobortis in mi eu, faucibus ullamcorper dui. Aenean vitae quam laoreet, sagittis lacus sed, viverra erat. Mauris vel nunc id lectus vehicula vehicula id eu metus. Nunc tincidunt erat mi, quis porta odio tincidunt in. Sed porttitor nulla auctor, lobortis sem congue, rutrum ligula.</p>
+    </section>
+
+    <div id="fixed"></div>
+
+    <div id="positioned">
+      <span></span>
+      I'm positioned!
+    </div>
+  </body>
+</html>
