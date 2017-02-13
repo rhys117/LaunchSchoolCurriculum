@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Contact Form</title>
+    <!-- <link rel="stylesheet" type="text/css" href="css_reset.css" /> -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <form action="" method="post">
+      <fieldset>
+        <dl>
+          <dt>
+            <label for="first_name">First Name</label>
+          </dt>
+          <dd>
+            <input type="text" name="first_name" id="first_name" />
+          </dd>
+          <dt>
+            <label for="last_name">Last Name</label>
+          </dt>
+          <dd>
+            <input type="text" name="last_name" id="last_name" />
+          </dd>
+          <dt>
+            <label for="email">Email</label>
+          </dt>
+          <dd>
+            <input type="email" name="email" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" />
+          </dd>
+          <dt>
+            <label for="city">City</label>
+          </dt>
+          <dd>
+            <input type="text" name="city" id="city" />
+          </dd>
+          <dt>
+            <label for="state">State</label>
+          </dt>
+          <dd>
+            <select name="state" id="state">
+              <option value="ACT">ACT</option>
+              <option value="NSW">NSW</option>
+              <option value="NT">NT</option>
+              <option value="QLD" selected>QLD</option>
+              <option value="SA">SA</option>
+              <option value="TAS">TAS</option>
+              <option value="VIC">VIC</option>
+              <option value="WA">WA</option>
+            </select>
+          </dd>
+          <dt>
+            <label for="postcode">Post Code</label>
+          </dt>
+          <dd>
+            <input type="number" name="postcode" id="postcode" />
+          </dd>
+        </dl>
+
+        <p>Which of these colours do you most prefer?</p>
+        <ul>
+          <li>
+            <label><input type="radio" name="color" value="red" />Red</label>
+          </li>
+          <li>
+            <label><input type="radio" name="color" value="orange" />Orange</label>
+          </li>
+          <li>
+            <label><input type="radio" name="color" value="yellow" />Yellow</label>
+          </li>
+          <li>
+            <label><input type="radio" name="color" value="green" />Green</label>
+          </li>
+          <li>
+            <label><input type="radio" name="color" value="blue" />Blue</label>
+          </li>
+          <li>
+            <label><input type="radio" name="color" value="indigo" />Indgigo</label>
+          </li>
+          <li>
+            <label><input type="radio" name="color" value="violet" />Violet</label>
+          </li>
+        </ul>
+
+        <p>What web technologies do you want to hear more about?</p>
+        <ul>
+          <li>
+            <label><input type="checkbox" name="technologies" value="html" />HTML</label>
+          </li>
+          <li>
+            <label><input type="checkbox" name="technologies" value="CSS" />CSS</label>
+          </li>
+          <li>
+            <label><input type="checkbox" name="technologies" value="javascript" />Javascript</label>
+          </li>
+          <li>
+            <label><input type="checkbox" name="technologies" value="ruby" />Ruby</label>
+          </li>
+          <li>
+            <label><input type="checkbox" name="technologies" value="rails" />Rails</label>
+          </li>
+        </ul>
+
+        <dl>
+          <dt>
+            <label for="comments">Comments</label>
+          </dt>
+          <dd>
+            <textarea rows="6" cols="80" name="comments" id="comments"></textarea>
+          </dd>
+        </dl>
+
+        <input type="hidden" value="2017-10-02" name="timestamp" />
+        <input type="submit" value="Send" />
+        <input type="reset" />
+      </fieldset>
+    </form>
+  </body>
+</html>
