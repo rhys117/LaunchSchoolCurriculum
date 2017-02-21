@@ -20,3 +20,4 @@ http://codepen.io/knwang/pen/VaPBRY
 https://d3jtzah944tvom.cloudfront.net/lesson_3/the_box_model/box_model_v2.html
 http://learnlayout.com/
 http://learnlayout.com/display.html
+https://www.smashingmagazine.com/2016/05/an-ultimate-guide-to-css-pseudo-classes-and-pseudo-elements/#single-or-double-colon-for-pseudo-elements
