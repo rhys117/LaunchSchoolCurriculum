@@ -12,6 +12,14 @@ header h1 {
   margin: 0 0 115px 0;
 }
 
+header h1 a {
+  display: inline-block;
+  width: 298px;
+  height: 243px;
+  text-indent: -9999px;
+  background: transparent url("images/logo.png") 0 0 no-repeat;
+}
+
 nav {
   padding: 0 0 45px 0;
   font-size: 26px;
@@ -147,19 +155,92 @@ footer li a.instagram { background-position: 0 100%; }
 @media (max-width: 768px) {
   body {
     padding-top: 65px;
+    font-size: 16px;
   }
 
-  header h1{
+  header h1 a{
     width: 223px;
     height: 182px;
-    margin: 0 auto 30px auto;
-  }
-
-  header img {
-    width: 100%;
+    background-size: cover;
   }
 
   nav {
     padding-bottom: 20px;
+  }
+
+  main {
+    padding-top: 70px;
+  }
+
+  article {
+    padding-bottom: 50px;
+  }
+
+  article p {
+    padding: 0 40px;
+    text-align: justify;
+  }
+
+  footer {
+    padding: 35px 0;
+  }
+
+  footer li {
+    padding: 0 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 0;
+  }
+
+  header {
+    padding: 20px 15px;
+  }
+
+  header h1 {
+    font-size: 20px
+    float: left;
+    margin: 20px 0 0 0;
+  }
+
+  header h1 a {
+    width: auto;
+    height: 40px;
+    padding: 10px 0 0 55px;
+    text-indent: 0;
+    color: #ffffff;
+    text-decoration: none;
+    background-position: -20px 0;
+    background-size: 90px auto;
+  }
+
+  nav {
+    padding-bottom: 0;
+    text-align: right;
+  }
+
+  nav li {
+    display: block;
+    padding: 5px 0;
+    font-size: 16px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  #team p {
+    padding: 0 30px 40px 30px;
+  }
+
+  h2:before,
+  h2:after {
+    vertical-align: 0;
+  }
+
+  footer li {
+    padding: 0 18px;
   }
 }
