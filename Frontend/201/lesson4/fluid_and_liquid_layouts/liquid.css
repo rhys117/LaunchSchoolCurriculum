@@ -1,0 +1,14 @@
+#content,
+#sidebar {
+  padding: 20px 30px;
+}
+
+#content {
+  width: 70%;
+  float: left;
+  box-sizing: border-box;
+}
+
+#sidebar {
+  overflow: hidden;
+}
