@@ -1,0 +1,31 @@
+@import url(css_reset_default.css);
+
+body {
+  font: normal 16px Helvetica, Arial, sans-serif;
+  color: #1c242f;
+  background: #ffd505;
+}
+
+header, main {
+  width: 900px;
+  margin: 0 auto 30px auto;
+}
+
+header {
+  padding: 30px 0;
+  background: #047ec1;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+h1 {
+  padding: 0 25px;
+  font-size: 2.4em;
+  color: #ffffff;
+}
+
+main {
+  padding: 25px;
+  background: #ececec;
+  box-sizing: border-box;
+}
