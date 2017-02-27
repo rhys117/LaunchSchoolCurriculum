@@ -29,3 +29,21 @@ main {
   background: #ececec;
   box-sizing: border-box;
 }
+
+main h2 {
+  padding-bottom: 25px;
+  font-size: 2em;
+}
+
+li {
+  float: left;
+  margin: 0 0 2% 2%;
+  width: 23%;
+}
+
+img {
+  display: block;
+  width: auto;
+  height: 140px;
+  margin: 0 auto;
+}
