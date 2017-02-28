@@ -30,15 +30,38 @@ main {
   box-sizing: border-box;
 }
 
+main:after {
+  display: block;
+  clear: both;
+  content: "";
+}
+
 main h2 {
   padding-bottom: 25px;
   font-size: 2em;
 }
 
 li {
+  padding: 15px;
   float: left;
   margin: 0 0 2% 2%;
-  width: 23%;
+  width: 23.5%;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+li:nth-of-type(4n+1) {
+  margin-left: 0;
+}
+
+h3 {
+  padding: 0 0 5px 0;
+  font-size: 1,2em;
+}
+
+figure {
+  width: 100%;
+  height: 160px;
 }
 
 img {
@@ -46,4 +69,25 @@ img {
   width: auto;
   height: 140px;
   margin: 0 auto;
+}
+
+input[type="checkbox"] { display: none; }
+input:checked + figure img {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  width: 400px;
+  height: auto;
+  margin-left: 0 0 0 -200px;
+  z-index: 2;
+}
+input:checked + figure:before {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  content: "";
+  background: rgba(0, 0, 0, .4);
 }
