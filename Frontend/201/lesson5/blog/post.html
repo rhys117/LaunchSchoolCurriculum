@@ -14,7 +14,7 @@
           <li><a href="#">HTML</a></li>
           <li><a href="#">CSS</a></li>
           <li><a href="#">Javascript</a></li>
-          <li><a href="#">Other</a></li>
+          <li><a href="#">About</a></li>
         </ul>
       </nav>
     </header>
@@ -29,7 +29,51 @@
 
         <section class="comments">
           <h2>Comments</h2>
+          <article>
+            <header>
+              <img src="images/usr_kevin.png" />
+              <h3>
+                <a href="#">Kevin</a>
+                on
+                <time datetime="2014-02-15">Feb. 5, 2014</time>
+              </h3>
+            </header>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+          </article>
+
+          <article>
+            <header>
+              <img src="images/usr_chris.png" />
+              <h3>
+                <a href="#">Chris</a>
+                on
+                <time datetime="2014-02-15" />Feb. 5, 2014</time>
+              </h3>
+            </header>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </article>
         </section>
+
+        <form action="" method="get">
+          <h2>Post Comments</h2>
+          <fieldset>
+            <dl>
+              <dt><label for="name">Your Name</label></dt>
+              <dd>
+                <input type="text" name="name" id="name" placeholder="John" />
+              </dd>
+              <dt><label for="email">Your Email</label></dt>
+              <dd>
+                <input type="email" name="email" id="email" placeholder="contact@google.com" />
+              </dd>
+              <dt><label for="comment">Comment</label></dt>
+              <dd>
+                <textarea rows="6" cols="80" name="comment" id="comment"></textarea>
+              </dd>
+            </dl>
+            <input type="submit" value="Submit" class="button" />
+          </fieldset>
+        </form>
       </div>
 
       <div id="sidebar">
