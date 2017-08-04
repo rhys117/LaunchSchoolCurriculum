@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubis'
 require 'redcarpet'
+require 'yaml'
 
 SUPPORTED_FILETYPES = [".md", ".txt"]
 
@@ -14,6 +15,23 @@ def data_path
     File.expand_path("../test/data", __FILE__)
   else
     File.expand_path("../data", __FILE__)
+  end
+end
+
+def load_user_credentials
+  credentials_path = if ENV
+  end
+end
+
+def user_signed_in?
+  session[:username]
+  # session.key?(:username)
+end
+
+def redirect_unless_signed_in
+  unless user_signed_in?
+    session[:error] = "You must be signed in to do that."
+    redirect "/"
   end
 end
 
@@ -50,6 +68,7 @@ helpers do
     # when ".md"
     #   render_markdown(content)
     # end
+    # comment for demo git
   end
 end
 
@@ -85,10 +104,14 @@ post "/users/signout" do
 end
 
 get "/new" do
+  redirect_unless_signed_in
+
   erb :new
 end
 
 post "/create" do
+  redirect_unless_signed_in
+
   file = params[:filename].to_s
 
   if file.size == 0
@@ -121,6 +144,8 @@ get "/:file" do
 end
 
 get "/edit/:file" do
+  redirect_unless_signed_in
+
   file_path = File.join(data_path, params[:file])
 
   @filename = params[:file]
@@ -130,6 +155,8 @@ get "/edit/:file" do
 end
 
 post "/delete/:file" do
+  redirect_unless_signed_in
+
   file_path = File.join(data_path, params[:file])
 
   File.delete(file_path)
@@ -139,6 +166,8 @@ post "/delete/:file" do
 end
 
 post "/:file" do
+  redirect_unless_signed_in
+
   file_path = File.join(data_path, params[:file])
 
   File.write(file_path, params[:content])
