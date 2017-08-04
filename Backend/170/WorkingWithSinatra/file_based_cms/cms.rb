@@ -3,6 +3,7 @@ require 'sinatra/reloader'
 require 'tilt/erubis'
 require 'redcarpet'
 require 'yaml'
+require 'bcrypt'
 
 SUPPORTED_FILETYPES = [".md", ".txt"]
 
@@ -19,7 +20,22 @@ def data_path
 end
 
 def load_user_credentials
-  credentials_path = if ENV
+  credentials_path = if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/users.yml", __FILE__)
+  else
+    File.expand_path("../users.yml", __FILE__)
+  end
+  YAML.load_file(credentials_path)
+end
+
+def valid_credentials?(username, password)
+  credentials = load_user_credentials
+
+  if credentials.key?(username)
+    bcrypt_password = BCrypt::Password.new(credentials[username])
+    bcrypt_password == password
+  else
+    false
   end
 end
 
@@ -68,7 +84,6 @@ helpers do
     # when ".md"
     #   render_markdown(content)
     # end
-    # comment for demo git
   end
 end
 
@@ -86,8 +101,11 @@ get "/users/signin" do
 end
 
 post "/users/signin" do
-  if params[:username] == "admin" && params[:password] == "secret"
-    session[:username] = params[:username]
+  credentials = load_user_credentials
+  username = params[:username]
+
+  if valid_credentials?(username, params[:password])
+    session[:username] = username
     session[:success] = "Welcome!"
     redirect "/"
   else
